@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block title %}Course List{% endblock %}
+{% block top %}
+    <h1 class="title has-text-centered">Courses</h1>
+
+    <!--{% if courses %}-->
+    <form action="" method="post" name="course_list">
+      <table class="table is-bordered is-striped is-fullwidth has-text-centered">
+        <thead>
+          <tr>
+            <th>Pick</th>
+            <th>Course Code</th>
+            <th>Course Title</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for courseCode, courseTitle in courses %}
+          <tr>
+            <td>
+              <label class="checkbox">
+                <input type="checkbox" name="course_keys" value="{{ course_key }}"/>
+              </label>
+            </td>
+            <td>{{ courseCode }}</td>
+            <td>{{ courseTitle }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+      </table>
+
+      <div class="field is-grouped-centered has-text-centered">
+        <div class="control">
+          <button class="button is-danger is-small">Delete</button>
+        </div>
+      </div>
+    </form>
+    <!--{% endif %}-->
+{% endblock %}
