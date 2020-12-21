@@ -7,6 +7,7 @@ def create_app():
     app.config.from_object("settings")
     app.add_url_rule("/", view_func=views.home_page)
     app.add_url_rule("/courses", view_func=views.courses_page)
+    app.add_url_rule("/course/<int:semester>/<int:crn>", view_func=views.course_page)
     return app
 
 if __name__ == "__main__":

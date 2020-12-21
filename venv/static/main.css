@@ -5,3 +5,7 @@ h1 {
 div.container.has-text-centered h1#override.title.is-1 {
     color: rgb(254, 175, 22);
 }
+
+h1#override.title.has-text-centered {
+    color: rgb(254, 175, 22);
+}

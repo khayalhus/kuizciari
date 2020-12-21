@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block title %}Course List{% endblock %}
 {% block top %}
-    <h1 class="title has-text-centered">Courses</h1>
+    <h1 id="override" class="title has-text-centered">Courses</h1>
 
     <!--{% if courses %}-->
     <form action="" method="post" name="course_list">
@@ -9,20 +9,26 @@
         <thead>
           <tr>
             <th>Pick</th>
+            <th>CRN</th>
             <th>Course Code</th>
             <th>Course Title</th>
+            <th>Instructor(s)</th>
+            <th>Semester</th>
           </tr>
         </thead>
         <tbody>
-        {% for courseCode, courseTitle in courses %}
+        {% for crn, courseCode, courseTitle, instructor, semester in courses %}
           <tr>
             <td>
               <label class="checkbox">
                 <input type="checkbox" name="course_keys" value="{{ course_key }}"/>
               </label>
             </td>
+            <td><a href="{{ url_for('course_page', crn=crn, semester=semester) }}">{{ crn }}</a></td>
             <td>{{ courseCode }}</td>
             <td>{{ courseTitle }}</td>
+            <td>{{ instructor }}</td>
+            <td>{{ semester }}</td>
           </tr>
         {% endfor %}
       </tbody>
