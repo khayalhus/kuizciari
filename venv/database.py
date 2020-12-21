@@ -1,4 +1,5 @@
 import psycopg2 as dbapi2
+import sys
 
 def connect(): # connects to db and returns cursor
     try: connection = dbapi2.connect(user="postgres",password="huseynov18",host="127.0.0.1",port="5432",database="postgres")
@@ -8,20 +9,33 @@ def connect(): # connects to db and returns cursor
 connection = connect()
 cursor = connection.cursor()
 
-def get_courses():
-    statement = """SELECT  "Class"."crn", "Class"."courseCode", "courseTitle", "instructorName", "Class"."semester"
+def get_classes():
+    statement = """SELECT  "Class"."crn", "Class"."courseCode", "courseTitle", "Class"."semester"
                     FROM "Class"
-                    LEFT JOIN "Course" ON "Class"."courseCode" = "Course"."courseCode"
-                    LEFT JOIN "Instructs" ON 
-                    "Instructs"."crn" = "Class"."crn"
-                    AND "Instructs"."semester" = "Class"."semester"
+                    LEFT JOIN "Course" ON "Class"."courseCode" = "Course"."courseCode";"""
+    statement2 = """SELECT "instructorName" FROM "Instructs"
                     LEFT JOIN "Instructor" ON
-                    "Instructor"."instructorID" = "Instructs"."instructorID";"""
+                    "Instructor"."instructorID" = "Instructs"."instructorID"
+                    WHERE
+                    "Instructs"."crn" = %(crn)s
+                    AND
+                    "Instructs"."semester" = %(semester)s;
+                    """
     cursor.execute(statement)
-    courses = cursor.fetchall()
-    return courses
+    temp = cursor.fetchall()
+    i = 0
+    instructors = []
+    for crn, courseCode, courseTitle, semester in temp:
+        instructors.append([])
+        cursor.execute(statement2, {'crn': crn, 'semester': semester})
+        instructors_query = cursor.fetchall()
+        for instructor_info in instructors_query:
+            instructors[i].append(instructor_info[0])
+        i = i + 1
+    classes = [temp, instructors]
+    return classes
 
-def get_course(crn, semester):
+def get_class(crn, semester):
     statement = """SELECT "Class"."crn", "Class"."semester", "courseTitle"
                     FROM "Class"
                     LEFT JOIN "Course" ON "Class"."courseCode" = "Course"."courseCode"
@@ -32,5 +46,5 @@ def get_course(crn, semester):
                     ;
                 """
     cursor.execute(statement, {'crn': crn, 'semester': semester})
-    course = cursor.fetchone()
-    return course
+    aclass = cursor.fetchone()
+    return aclass

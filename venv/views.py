@@ -1,6 +1,6 @@
 from flask import current_app, render_template, request, redirect, url_for, abort
 from datetime import datetime
-from database import connect, get_courses, get_course
+import database
 
 today = datetime.today()
 year_dec = today.strftime("%Y")
@@ -8,13 +8,13 @@ year_dec = today.strftime("%Y")
 def home_page():
     return render_template("home.html", year = year_dec)
 
-def courses_page():
-    courses = get_courses()
-    return render_template("courses.html", year = year_dec, courses = courses)
+def classes_page():
+    aclasses = database.get_classes()
+    return render_template("classes.html", year = year_dec, aclasses = aclasses[0], instructors = aclasses[1], zip=zip)
 
-def course_page(crn, semester):
-    course = get_course(crn, semester)
-    return render_template("course.html", year = year_dec, course = course)
+def class_page(crn, semester):
+    aclass = database.get_class(crn, semester)
+    return render_template("class.html", year = year_dec, aclass = aclass)
 
 '''
 def course_addition_page():

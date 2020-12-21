@@ -1,9 +1,8 @@
 {% extends "layout.html" %}
-{% block title %}Course List{% endblock %}
+{% block title %}Class List{% endblock %}
 {% block top %}
-    <h1 id="override" class="title has-text-centered">Courses</h1>
+    <h1 id="override" class="title has-text-centered">Classes</h1>
 
-    <!--{% if courses %}-->
     <form action="" method="post" name="course_list">
       <table class="table is-bordered is-striped is-fullwidth has-text-centered">
         <thead>
@@ -17,18 +16,23 @@
           </tr>
         </thead>
         <tbody>
-        {% for crn, courseCode, courseTitle, instructor, semester in courses %}
+        {% for aclass, instructors in zip(aclasses, instructors) %}
           <tr>
             <td>
               <label class="checkbox">
                 <input type="checkbox" name="course_keys" value="{{ course_key }}"/>
               </label>
             </td>
-            <td><a href="{{ url_for('course_page', crn=crn, semester=semester) }}">{{ crn }}</a></td>
-            <td>{{ courseCode }}</td>
-            <td>{{ courseTitle }}</td>
-            <td>{{ instructor }}</td>
-            <td>{{ semester }}</td>
+            <td><a href="{{ url_for('class_page', crn=aclass[0], semester=aclass[3]) }}">{{ aclass[0] }}</a></td>
+            <td>{{ aclass[1] }}</td>
+            <td>{{ aclass[2] }}</td>
+            <td>
+              {{ instructors[0] }}
+              {% for instructor in instructors[1:] %} 
+              , {{ instructor }}
+              {% endfor %}
+            </td>
+            <td>{{ aclass[3] }}</td>
           </tr>
         {% endfor %}
       </tbody>
@@ -40,5 +44,4 @@
         </div>
       </div>
     </form>
-    <!--{% endif %}-->
 {% endblock %}
