@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}"/>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    {% block link %}{% endblock %}
   </head>
   <body>
     <section class="hero is-fullheight-with-navbar">
@@ -25,6 +26,14 @@
         <div id="navbarBasic" class="navbar-menu">
           <div class="navbar-start">
             <a href="{{ url_for('classes_page') }}" class="navbar-item">Class List</a>
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">Add</a>
+              <div class="navbar-dropdown">
+                <a href="{{ url_for('class_addition_page') }}" class="navbar-item">Class</a>
+                <a href="{{ url_for('course_addition_page') }}" class="navbar-item">Course</a>
+                <a href="{{ url_for('instructor_addition_page') }}" class="navbar-item">Instructor</a>
+              </div>
+            </div>
           </div>
         </div>
       </nav>

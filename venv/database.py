@@ -57,3 +57,43 @@ def delete_class(crn, semester):
     cursor.execute(statement, {'crn': crn, 'semester': semester})
     connection.commit()
     return
+
+def get_instructors():
+    statement = """SELECT "instructorID", "instructorName" FROM "Instructor";"""
+    cursor.execute(statement)
+    instructors = cursor.fetchall()
+    return instructors
+
+def get_courses():
+    statement = """SELECT "courseCode", "courseTitle" FROM "Course";"""
+    cursor.execute(statement)
+    courses = cursor.fetchall()
+    return courses
+
+def add_class(crn, semester, courseCode):
+    statement = """INSERT INTO "Class" ("crn", "semester", "courseCode")
+                    VALUES(%(crn)s, %(semester)s, %(courseCode)s);"""
+    cursor.execute(statement, {'crn': crn, 'semester': semester, 'courseCode': courseCode})
+    connection.commit()
+    return
+
+def add_course(courseCode, courseTitle):
+    statement = """INSERT INTO "Course" ("courseCode", "courseTitle")
+                    VALUES(%(courseCode)s, %(courseTitle)s);"""
+    cursor.execute(statement, {'courseCode': courseCode, 'courseTitle': courseTitle})
+    connection.commit()
+    return
+
+def add_instructor(instructorName):
+    statement = """INSERT INTO "Instructor" ("instructorName")
+                    VALUES(%(instructorName)s);"""
+    cursor.execute(statement, {'instructorName': instructorName})
+    connection.commit()
+    return
+
+def add_instructs(crn, semester, instructorID):
+    statement = """INSERT INTO "Instructs" ("instructorID", "crn", "semester")
+                    VALUES(%(instructorID)s, %(crn)s, %(semester)s);"""
+    cursor.execute(statement, {'instructorID': instructorID, 'crn': crn, 'semester': semester})
+    connection.commit()
+    return

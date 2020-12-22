@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block title %}Add Instructor{% endblock %}
+{% block top %}
+    <h1 class="title has-text-centered">Add instructor</h1>
+
+    <form action="" method="post" name="add_instructor" style="width: 80%; margin: 0 auto;">
+      
+      <div class="field">
+        <label for="facultyCode" class="label">Instructor Name</label>
+        <div class="control">
+          <input type="text" name="instructorName" class="input" maxlength="255" placeholder="Full name of the instructor (max 255 characters) (ex. Hayri Turgut Uyar)" required/>
+        </div>
+      </div>
+
+      <div class="field is-grouped">
+        <div class="control">
+          <button class="button is-primary is-small">Save</button>
+        </div>
+      </div>
+    </form>
+{% endblock %}

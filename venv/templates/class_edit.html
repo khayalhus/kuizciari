@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block title %}Add Class{% endblock %}
+{% block link %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+{% endblock %}
+{% block top %}
+    <h1 class="title has-text-centered">Add class</h1>
+
+    <form action="" method="post" name="add_class" style="width: 80%; margin: 0 auto;">
+      
+      <div class="field">
+        <label for="crn" class="label">CRN</label>
+        <div class="control">
+            <input type="number" name="crn" class="input" min="10000" max="99999" placeholder="Class Reference Number (5 digits)" required/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="semester" class="label">Semester</label>
+        <div class="control">
+            <input type="number" name="semester" class="input" min="202110" placeholder="Semester number (6 digits)" required/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="courseCode" class="label">Course Code</label>
+        <div class="control">
+          <select class="form-control" id="course" name="courseCode" style="width: 100%" required>
+            {% for courseCode, courseTitle in courses %}
+            <option>{{ courseCode }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <!--
+      <div class="field">
+        <label for="courseTitle" class="label">Course Title</label>
+        <div class="control">
+            <input type="text" class="input" name="courseTitle" minlength="1" maxlength="255" placeholder="Title of the course (max 255 characters) (ex. Database Systems)" readonly/>
+        </div>
+      </div>
+      -->
+
+      <div class="field">
+        <label for="instructorName" class="label">Instructor(s)</label>
+        <div class="control">
+          <select class="form-control" multiple="multiple" id="instructor" name="instructors[]" style="width: 100%" placeholder="test" required>
+            {% for instructorID, instructorName in instructors %}
+            <option value="{{ instructorID }}">{{ instructorName }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="field is-grouped">
+        <div class="control">
+          <button class="button is-primary is-small">Save</button>
+        </div>
+      </div>
+    </form>
+
+    <script>
+    $("#course").select2();
+    $("#instructor").select2({
+      placeholder: "Full name of instructor(s)"
+    });
+    </script>
+    
+{% endblock %}

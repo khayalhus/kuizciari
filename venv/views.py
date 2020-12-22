@@ -3,6 +3,7 @@ from datetime import datetime
 import json
 import database
 
+
 today = datetime.today()
 year_dec = today.strftime("%Y")
 
@@ -13,7 +14,7 @@ def classes_page():
     if request.method == "GET":
         aclasses = database.get_classes()
         return render_template("classes.html", year = year_dec, aclasses = aclasses[0], instructors = aclasses[1], zip=zip)
-    if request.method == "POST":
+    elif request.method == "POST":
         keys = request.form.getlist("class_keys")
         for key in keys:
             loaded = json.loads(key)
@@ -24,20 +25,38 @@ def class_page(crn, semester):
     aclass = database.get_class(crn, semester)
     return render_template("class.html", year = year_dec, aclass = aclass)
 
-'''
+
+def class_addition_page():
+    if request.method == "GET":
+        instructors = database.get_instructors()
+        courses = database.get_courses()
+        return render_template("class_edit.html", year = year_dec, courses = courses, instructors = instructors, zip=zip)
+    elif request.method == "POST":
+        form_crn = request.form["crn"]
+        form_semester = request.form["semester"]
+        form_courseCode = request.form["courseCode"]
+        form_instructorIDs = request.form.getlist("instructors[]")
+        database.add_class(form_crn, form_semester, form_courseCode)
+        for form_instructorID in form_instructorIDs:
+            database.add_instructs(form_crn, form_semester, form_instructorID)
+        return redirect(url_for("classes_page"))
+
 def course_addition_page():
     if request.method == "GET":
-        values = {"crn": "", "semester": "", "courseCode": ""}
-        return render_template(
-            "class_edit.html",
-            min_year=1887,
-            max_year=datetime.now().year,
-            values=values,
-        )
+        return render_template("course_edit.html", year = year_dec)
     elif request.method == "POST":
-        form_title = request.form["title"]
-        form_year = request.form["year"]
-        movie = Movie(form_title, year=int(form_year) if form_year else None)
-        db = current_app.config["db"]
-        movie_key = db.add_movie(movie)
-        return redirect(url_for("movie_page", movie_key=movie_key))'''
+        form_facultyCode = request.form["facultyCode"]
+        form_courseNumber = request.form["courseNumber"]
+        form_language = request.form["language"]
+        form_courseTitle = request.form["courseTitle"]
+        courseCode = "" + form_facultyCode + form_courseNumber + form_language
+        database.add_course(courseCode, form_courseTitle)
+        return redirect(url_for("class_addition_page"))
+
+def instructor_addition_page():
+    if request.method == "GET":
+        return render_template("instructor_edit.html", year = year_dec)
+    elif request.method == "POST":
+        form_instructorName = request.form["instructorName"]
+        database.add_instructor(form_instructorName)
+        return redirect(url_for("class_addition_page"))
