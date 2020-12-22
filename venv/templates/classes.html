@@ -3,7 +3,7 @@
 {% block top %}
     <h1 id="override" class="title has-text-centered">Classes</h1>
 
-    <form action="" method="post" name="course_list">
+    <form action="" method="post" name="class_list" enctype="application/json">
       <table class="table is-bordered is-striped is-fullwidth has-text-centered">
         <thead>
           <tr>
@@ -20,7 +20,7 @@
           <tr>
             <td>
               <label class="checkbox">
-                <input type="checkbox" name="course_keys" value="{{ course_key }}"/>
+                <input type="checkbox" name="class_keys" value="{{ [aclass[0], aclass[3]]|tojson  }}"/>
               </label>
             </td>
             <td><a href="{{ url_for('class_page', crn=aclass[0], semester=aclass[3]) }}">{{ aclass[0] }}</a></td>
@@ -40,7 +40,7 @@
 
       <div class="field is-grouped-centered has-text-centered">
         <div class="control">
-          <button class="button is-danger is-small">Delete</button>
+          <button class="button is-danger">Delete</button>
         </div>
       </div>
     </form>

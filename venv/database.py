@@ -1,5 +1,4 @@
 import psycopg2 as dbapi2
-import sys
 
 def connect(): # connects to db and returns cursor
     try: connection = dbapi2.connect(user="postgres",password="huseynov18",host="127.0.0.1",port="5432",database="postgres")
@@ -48,3 +47,13 @@ def get_class(crn, semester):
     cursor.execute(statement, {'crn': crn, 'semester': semester})
     aclass = cursor.fetchone()
     return aclass
+
+def delete_class(crn, semester):
+    statement = """DELETE FROM "Class"
+                    WHERE "crn" = %(crn)s
+                    AND "semester" = %(semester)s
+                    ;
+                """
+    cursor.execute(statement, {'crn': crn, 'semester': semester})
+    connection.commit()
+    return

@@ -1,5 +1,6 @@
 from flask import current_app, render_template, request, redirect, url_for, abort
 from datetime import datetime
+import json
 import database
 
 today = datetime.today()
@@ -9,8 +10,15 @@ def home_page():
     return render_template("home.html", year = year_dec)
 
 def classes_page():
-    aclasses = database.get_classes()
-    return render_template("classes.html", year = year_dec, aclasses = aclasses[0], instructors = aclasses[1], zip=zip)
+    if request.method == "GET":
+        aclasses = database.get_classes()
+        return render_template("classes.html", year = year_dec, aclasses = aclasses[0], instructors = aclasses[1], zip=zip)
+    if request.method == "POST":
+        keys = request.form.getlist("class_keys")
+        for key in keys:
+            loaded = json.loads(key)
+            database.delete_class(loaded[0], loaded[1])
+        return redirect(url_for("classes_page"))
 
 def class_page(crn, semester):
     aclass = database.get_class(crn, semester)
