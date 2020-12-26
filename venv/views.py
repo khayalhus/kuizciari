@@ -1,4 +1,4 @@
-from flask import current_app, render_template, request, redirect, url_for, abort
+from flask import current_app, render_template, request, redirect, url_for, abort, session
 from datetime import datetime
 import json
 import database
@@ -60,3 +60,11 @@ def instructor_addition_page():
         form_instructorName = request.form["instructorName"]
         database.add_instructor(form_instructorName)
         return redirect(url_for("class_addition_page"))
+
+def login_page():
+
+    return render_template("login.html", year = year_dec)
+
+def signup_page():
+
+    return render_template("signup.html", year = year_dec)

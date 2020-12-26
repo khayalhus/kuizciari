@@ -1,8 +1,10 @@
 {% extends "layout.html" %}
 {% block title %}Add Instructor{% endblock %}
 {% block top %}
+<div class="hero-body">
+  <div class="container">
     <h1 class="title has-text-centered">Add instructor</h1>
-
+    
     <form action="" method="post" name="add_instructor" style="width: 80%; margin: 0 auto;">
       
       <div class="field">
@@ -12,10 +14,13 @@
         </div>
       </div>
 
-      <div class="field is-grouped">
+      <div class="field">
         <div class="control">
-          <button class="button is-primary is-small">Save</button>
+          <button class="button is-primary is-warning">Save</button>
         </div>
       </div>
+
     </form>
+  </div>
+</div>
 {% endblock %}

@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block title %}Signup{% endblock %}
+{% block top %}
+
+<div class="hero-body">
+  <div class="container">
+    <h1 class="title has-text-centered">Signup</h1>
+    <div class="columns is-centered">
+      <div class="column is-6-tablet is-5-desktop is-4-widescreen">
+        <form action="" class="box has-background-warning">
+          <div class="field">
+            <label for="" class="label">Email</label>
+            <div class="control has-icons-left">
+              <input type="email" placeholder="e.g. coolguy18@itu.edu.tr" class="input" required>
+              <span class="icon is-small is-left has-text-info">
+                <i class="fa fa-envelope "></i>
+              </span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="" class="label">Password</label>
+            <div class="control has-icons-left">
+              <input type="password" placeholder="*******" class="input" required>
+              <span class="icon is-small is-left has-text-info">
+                <i class="fa fa-lock"></i>
+              </span>
+            </div>
+          </div>
+          <div class="field">
+            <button class="button has-text-warning-dark">
+              Sign Up
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
