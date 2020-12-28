@@ -1,4 +1,4 @@
-from flask import current_app, render_template, request, redirect, url_for, abort, session
+from flask import current_app, render_template, request, redirect, url_for, abort, session, flash
 from datetime import datetime
 import json
 import database
@@ -39,10 +39,16 @@ def class_addition_page():
         form_semester = request.form["semester"]
         form_courseCode = request.form["courseCode"]
         form_instructorIDs = request.form.getlist("instructors[]")
-        database.add_class(form_crn, form_semester, form_courseCode)
-        for form_instructorID in form_instructorIDs:
-            database.add_instructs(form_crn, form_semester, form_instructorID)
-        return redirect(url_for("classes_page"))
+        if database.add_class(form_crn, form_semester, form_courseCode) is True:
+            for form_instructorID in form_instructorIDs:
+                if database.add_instructs(form_crn, form_semester, form_instructorID) is False:
+                    flash("Instructor " + str(form_instructorID) + " is already assigned to this class.", "danger")
+            flash("Class with CRN " + form_crn +  " has been added.", "success")
+            return redirect(url_for("classes_page"))
+        else:
+            flash("Class already exists.", "danger")
+            return redirect(url_for("class_addition_page"))
+        
 
 def course_addition_page():
     if request.method == "GET":
@@ -53,7 +59,10 @@ def course_addition_page():
         form_language = request.form["language"]
         form_courseTitle = request.form["courseTitle"]
         courseCode = "" + form_facultyCode + form_courseNumber + form_language
-        database.add_course(courseCode, form_courseTitle)
+        if database.add_course(courseCode, form_courseTitle) is False:
+            flash("Course Code " + str(courseCode) + " already exists.", "danger")
+            return redirect(url_for("course_addition_page"))
+        flash("Course Code " + str(courseCode) + " has been successfully added.", "success")
         return redirect(url_for("class_addition_page"))
 
 def instructor_addition_page():
@@ -61,7 +70,10 @@ def instructor_addition_page():
         return render_template("instructor_edit.html", year = year_dec)
     elif request.method == "POST":
         form_instructorName = request.form["instructorName"]
-        database.add_instructor(form_instructorName)
+        if database.add_instructor(form_instructorName) is False:
+            flash("An unknown error occured when adding new instructor.", "danger")
+            return redirect(url_for("instructor_addition_page"))
+        flash("Instructor " + form_instructorName + " has been successfully added to the database.", "success")
         return redirect(url_for("class_addition_page"))
 
 def login_page():
@@ -72,9 +84,10 @@ def login_page():
         password = request.form["password"]
         remember = request.form.get("remember")
         exists = database.checkMail(email)
-        matches = database.checkPass(email, password)
         if exists is True:
+            matches = database.checkPass(email, password)
             if matches is None:
+                flash("Incorrect password.", "danger")
                 return redirect(url_for("login_page"))
             else:
                 session['logged_in'] = True
@@ -83,6 +96,7 @@ def login_page():
                 session['mail'] = email
                 return redirect(url_for("profile_page"))
         else:
+            flash("A user with this e-mail address does not exist.", "danger")
             return redirect(url_for("login_page"))
 
 def signup_page():
@@ -94,10 +108,12 @@ def signup_page():
         userType = request.form["userType"]
         isDuplicate = database.checkMail(email)
         if isDuplicate is True:
+            flash("Account already exists.", "danger")
             return redirect(url_for("signup_page"))
         else:
             database.signup(email, password, userType)
-            return redirect(url_for("profile_page"))
+            flash("Account created. Please log in.", "success")
+            return redirect(url_for("login_page"))
 
 def profile_page():
     if session.get('logged_in') is not None:

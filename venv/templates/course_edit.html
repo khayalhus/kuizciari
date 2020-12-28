@@ -4,8 +4,15 @@
 <div class="hero-body">
   <div class="container">
     <h1 class="title has-text-centered">Add course</h1>
+    
+    {% for category, message in get_flashed_messages(with_categories=True) %}
+    <div class="notification is-{{category}}" style="width: 80%; margin: 0 auto;">
+      <button class="delete"></button>
+      {{ message }}
+    </div>
+    {% endfor %}
 
-    <form action="" method="post" name="add_course" style="width: 80%; margin: 0 auto;">
+    <form action="" method="post" name="add_course" style="width: 80%; margin: 0 auto;" class="box has-background-warning">
       
       <div class="field">
         <label for="facultyCode" class="label">Faculty Code</label>
@@ -43,10 +50,11 @@
 
       <div class="field">
         <div class="control">
-          <button class="button is-primary is-warning">Save</button>
+          <button class="button is-primary has-background-white has-text-warning-dark">Save</button>
         </div>
       </div>
     </form>
   </div>
 </div>
+
 {% endblock %}

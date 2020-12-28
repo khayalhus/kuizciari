@@ -75,23 +75,35 @@ def get_courses():
 def add_class(crn, semester, courseCode):
     statement = """INSERT INTO "Class" ("crn", "semester", "courseCode")
                     VALUES(%(crn)s, %(semester)s, %(courseCode)s);"""
-    cursor.execute(statement, {'crn': crn, 'semester': semester, 'courseCode': courseCode})
-    connection.commit()
-    return
+    try:
+        cursor.execute(statement, {'crn': crn, 'semester': semester, 'courseCode': courseCode})
+        connection.commit()
+        return True
+    except dbapi2.DatabaseError:
+        connection.rollback()
+        return False
 
 def add_course(courseCode, courseTitle):
     statement = """INSERT INTO "Course" ("courseCode", "courseTitle")
                     VALUES(%(courseCode)s, %(courseTitle)s);"""
-    cursor.execute(statement, {'courseCode': courseCode, 'courseTitle': courseTitle})
-    connection.commit()
-    return
+    try:
+        cursor.execute(statement, {'courseCode': courseCode, 'courseTitle': courseTitle})
+        connection.commit()
+        return True
+    except dbapi2.DatabaseError:
+        connection.rollback()
+        return False
 
 def add_instructor(instructorName):
     statement = """INSERT INTO "Instructor" ("instructorName")
                     VALUES(%(instructorName)s);"""
-    cursor.execute(statement, {'instructorName': instructorName})
-    connection.commit()
-    return
+    try:
+        cursor.execute(statement, {'instructorName': instructorName})
+        connection.commit()
+        return True
+    except dbapi2.DatabaseError:
+        connection.rollback()
+        return False
 
 def add_instructs(crn, semester, instructorID):
     statement = """INSERT INTO "Instructs" ("instructorID", "crn", "semester")

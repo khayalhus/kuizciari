@@ -4,6 +4,13 @@
 <div class="hero-body">
   <div class="container">
     <h1 class="title has-text-centered">Classes</h1>
+    
+    {% for category, message in get_flashed_messages(with_categories=True) %}
+      <div class="notification is-{{category}}">
+        <button class="delete"></button>
+        {{ message }}
+      </div>
+    {% endfor %}
 
     <form action="" method="post" name="class_list" enctype="application/json">
       <table class="table is-bordered is-striped is-fullwidth has-text-centered">

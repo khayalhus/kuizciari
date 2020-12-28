@@ -11,11 +11,19 @@
     <h1 class="title has-text-centered">Signup</h1>
     <div class="columns is-centered">
       <div class="column is-6-tablet is-5-desktop is-4-widescreen">
+        
+        {% for category, message in get_flashed_messages(with_categories=True) %}
+        <div class="notification is-{{category}}" style="margin: 0 auto;">
+          <button class="delete"></button>
+          {{ message }}
+        </div>
+        {% endfor %}
+
         <form action="" method="post" class="box has-background-warning">
           <div class="field">
             <label for="" class="label">Email</label>
             <div class="control has-icons-left">
-              <input type="email" name="email" placeholder="e.g. coolguy18@itu.edu.tr" class="input" required>
+              <input type="email" name="email" placeholder="email@itu.edu.tr" class="input" required>
               <span class="icon is-small is-left has-text-dark">
                 <i class="fa fa-envelope "></i>
               </span>
