@@ -1058,3 +1058,6 @@ venv/Scripts/pythonw.exe
 venv/__pycache__/views.cpython-38.pyc
 venv/__pycache__/settings.cpython-38.pyc
 venv/__pycache__/database.cpython-38.pyc
+venv/__pycache__/security.cpython-38.pyc
+venv/security.py
+venv/__pycache__/initdb.cpython-38.pyc

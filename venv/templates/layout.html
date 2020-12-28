@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}"/>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/977aaa7cfd.js" crossorigin="anonymous"></script>
     {% block link %}{% endblock %}
   </head>
   <body>
@@ -38,6 +39,15 @@
           </div>
 
           <div class="navbar-end">
+            {% if session['logged_in'] == True %}
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">{{ session['mail'] }}</a>
+              <div class="navbar-dropdown">
+                <a href="{{ url_for('profile_page') }}" class="navbar-item">Profile</a>
+                <a href="{{ url_for('logout_page') }}" class="navbar-item">Log out</a>
+              </div>
+            </div>
+            {% else %}
             <div class="navbar-item">
               <div class="buttons">
                 <a href="{{ url_for('signup_page') }}" class="button is-warning">
@@ -48,6 +58,7 @@
                 </a>
               </div>
             </div>
+            {% endif %}
           </div>
         </div>
       </nav>

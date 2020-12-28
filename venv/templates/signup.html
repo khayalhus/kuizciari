@@ -1,5 +1,9 @@
 {% extends "layout.html" %}
 {% block title %}Signup{% endblock %}
+{% block link %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+{% endblock %}
 {% block top %}
 
 <div class="hero-body">
@@ -7,12 +11,12 @@
     <h1 class="title has-text-centered">Signup</h1>
     <div class="columns is-centered">
       <div class="column is-6-tablet is-5-desktop is-4-widescreen">
-        <form action="" class="box has-background-warning">
+        <form action="" method="post" class="box has-background-warning">
           <div class="field">
             <label for="" class="label">Email</label>
             <div class="control has-icons-left">
-              <input type="email" placeholder="e.g. coolguy18@itu.edu.tr" class="input" required>
-              <span class="icon is-small is-left has-text-info">
+              <input type="email" name="email" placeholder="e.g. coolguy18@itu.edu.tr" class="input" required>
+              <span class="icon is-small is-left has-text-dark">
                 <i class="fa fa-envelope "></i>
               </span>
             </div>
@@ -20,10 +24,19 @@
           <div class="field">
             <label for="" class="label">Password</label>
             <div class="control has-icons-left">
-              <input type="password" placeholder="*******" class="input" required>
-              <span class="icon is-small is-left has-text-info">
+              <input type="password" name="password" placeholder="At least 8 characters" minlength="8" class="input" required>
+              <span class="icon is-small is-left has-text-dark">
                 <i class="fa fa-lock"></i>
               </span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="userType" class="label">Account Type</label>
+            <div class="control">
+              <select class="form-control" id="userType" name="userType" style="width: 100%" required>
+                <option value="Student">Student</option>
+                <option value="Instructor">Instructor</option>
+              </select>
             </div>
           </div>
           <div class="field">
@@ -36,5 +49,7 @@
     </div>
   </div>
 </div>
-
+<script>
+  $("#userType").select2();
+</script>
 {% endblock %}

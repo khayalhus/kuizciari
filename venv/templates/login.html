@@ -7,12 +7,12 @@
     <h1 class="title has-text-centered">Login</h1>
     <div class="columns is-centered">
       <div class="column is-6-tablet is-5-desktop is-4-widescreen">
-        <form action="" class="box has-background-warning">
+        <form action="" method="post" class="box has-background-warning">
           <div class="field">
             <label for="" class="label">Email</label>
             <div class="control has-icons-left">
-              <input type="email" placeholder="e.g. coolguy18@itu.edu.tr" class="input" required>
-              <span class="icon is-small is-left has-text-info">
+              <input type="email" name="email" placeholder="e.g. coolguy18@itu.edu.tr" class="input" required>
+              <span class="icon is-small is-left has-text-dark">
                 <i class="fa fa-envelope "></i>
               </span>
             </div>
@@ -20,15 +20,15 @@
           <div class="field">
             <label for="" class="label">Password</label>
             <div class="control has-icons-left">
-              <input type="password" placeholder="*******" class="input" required>
-              <span class="icon is-small is-left has-text-info">
+              <input type="password" name="password" placeholder="At least 8 characters" minlength="8" class="input" required>
+              <span class="icon is-small is-left has-text-dark">
                 <i class="fa fa-lock"></i>
               </span>
             </div>
           </div>
           <div class="field">
             <label for="" class="checkbox">
-              <input type="checkbox">
+              <input type="checkbox" name="remember">
               Remember me
             </label>
           </div>

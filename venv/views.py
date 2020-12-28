@@ -2,6 +2,9 @@ from flask import current_app, render_template, request, redirect, url_for, abor
 from datetime import datetime
 import json
 import database
+import sys
+import os
+import hashlib
 
 
 today = datetime.today()
@@ -62,9 +65,49 @@ def instructor_addition_page():
         return redirect(url_for("class_addition_page"))
 
 def login_page():
-
-    return render_template("login.html", year = year_dec)
+    if request.method == "GET":
+        return render_template("login.html", year = year_dec)
+    elif request.method == "POST":
+        email = request.form["email"]
+        password = request.form["password"]
+        remember = request.form.get("remember")
+        exists = database.checkMail(email)
+        matches = database.checkPass(email, password)
+        if exists is True:
+            if matches is None:
+                return redirect(url_for("login_page"))
+            else:
+                session['logged_in'] = True
+                session['userID'] = matches[0]
+                session['userType'] = matches[1]
+                session['mail'] = email
+                return redirect(url_for("profile_page"))
+        else:
+            return redirect(url_for("login_page"))
 
 def signup_page():
+    if request.method == "GET":
+        return render_template("signup.html", year = year_dec)
+    elif request.method == "POST":
+        email = request.form["email"]
+        password = request.form["password"]
+        userType = request.form["userType"]
+        isDuplicate = database.checkMail(email)
+        if isDuplicate is True:
+            return redirect(url_for("signup_page"))
+        else:
+            database.signup(email, password, userType)
+            return redirect(url_for("profile_page"))
 
-    return render_template("signup.html", year = year_dec)
+def profile_page():
+    if session.get('logged_in') is not None:
+        return render_template("profile.html", year = year_dec)
+    else:
+        return redirect(url_for("login_page"))
+
+def logout_page():
+    session.pop('logged_in', None)
+    session.pop('userID', None)
+    session.pop('userType', None)
+    session.pop('mail', None)
+    return redirect(url_for("login_page"))

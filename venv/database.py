@@ -1,4 +1,6 @@
 import psycopg2 as dbapi2
+import hashlib
+import os
 
 def connect(): # connects to db and returns cursor
     try: connection = dbapi2.connect(user="postgres",password="huseynov18",host="127.0.0.1",port="5432",database="postgres")
@@ -97,3 +99,46 @@ def add_instructs(crn, semester, instructorID):
     cursor.execute(statement, {'instructorID': instructorID, 'crn': crn, 'semester': semester})
     connection.commit()
     return
+
+def signup(mail, password, userType):
+    statement = """INSERT INTO "User" ("mail", "password", "salt", "userType")
+                    VALUES(%(mail)s, %(password)s, %(salt)s, %(userType)s);"""
+                    
+    salt = os.urandom(32)
+    key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
+
+    password_hashed = key + salt
+    
+    cursor.execute(statement, {'mail': mail, 'password': key, 'salt': salt, 'userType': userType})
+    connection.commit()
+    return
+
+def checkMail(mail):
+    statement = """SELECT "mail" FROM "User" WHERE
+                    "User"."mail" = %(mail)s;"""
+    cursor.execute(statement, {'mail': mail})
+    out = cursor.fetchone()
+    if out is None:
+        return False
+    else:
+        return True
+
+def checkPass(mail, password_attempt):
+    statement1 = """SELECT "password", "salt" FROM "User" WHERE
+                    "User"."mail" = %(mail)s;"""
+                    
+    cursor.execute(statement1, {'mail': mail})
+    credentials = cursor.fetchone()
+
+    salt = credentials[1]
+    key = credentials[0]
+    key_attempt = hashlib.pbkdf2_hmac('sha256', password_attempt.encode('utf-8'), salt, 100000)
+    
+    statement2 = """SELECT "userID", "userType" FROM "User" WHERE
+                    "User"."mail" = %(mail)s
+                    AND
+                    "User"."password" = %(password)s;"""
+
+    cursor.execute(statement2, {'mail': mail, 'password': key_attempt})
+    userType = cursor.fetchone()
+    return userType
