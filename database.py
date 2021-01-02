@@ -2,10 +2,17 @@ import psycopg2 as dbapi2
 import hashlib
 import os
 
+url = os.getenv("DATABASE_URL")
+
+if (url is None):
+    url = "postgresql://postgres:huseynov18@127.0.0.1:5432/postgres"
+
 def connect(): # connects to db and returns cursor
-    try: connection = dbapi2.connect(user="postgres",password="huseynov18",host="127.0.0.1",port="5432",database="postgres")
-    except: print("Could not connect to database")
-    return connection
+    try: conn = dbapi2.connect(url)
+    except:
+        conn = None
+        print("Could not connect to database")
+    return conn
 
 connection = connect()
 cursor = connection.cursor()

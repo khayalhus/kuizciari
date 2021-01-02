@@ -74,3 +74,6 @@ def initialize():
         database.cursor.execute(statement)
         database.connection.commit()
     return
+  
+if __name__ == "__main__":
+  initialize()
