@@ -2,7 +2,7 @@
 {% block title %}Class List{% endblock %}
 {% block top %}
 <div class="hero-body">
-  <div class="container">
+  <div class="container" style="width: 100%;">
     <h1 class="title has-text-centered">Classes</h1>
     
     {% for category, message in get_flashed_messages(with_categories=True) %}
@@ -13,39 +13,41 @@
     {% endfor %}
 
     <form action="" method="post" name="class_list" enctype="application/json">
-      <table class="table is-bordered is-striped is-fullwidth has-text-centered">
-        <thead class="has-background-warning">
-          <tr>
-            <th>Pick</th>
-            <th>CRN</th>
-            <th>Course Code</th>
-            <th>Course Title</th>
-            <th>Instructor(s)</th>
-            <th>Semester</th>
-          </tr>
-        </thead>
-        <tbody>
-        {% for aclass, instructors in zip(aclasses, instructors) %}
-          <tr>
-            <td>
-              <label class="checkbox">
-                <input type="checkbox" name="class_keys" value="{{ [aclass[0], aclass[3]]|tojson  }}"/>
-              </label>
-            </td>
-            <td><a href="{{ url_for('class_page', crn=aclass[0], semester=aclass[3]) }}">{{ aclass[0] }}</a></td>
-            <td>{{ aclass[1] }}</td>
-            <td>{{ aclass[2] }}</td>
-            <td>
-              {{ instructors[0] }}
-              {% for instructor in instructors[1:] %} 
-              , {{ instructor }}
-              {% endfor %}
-            </td>
-            <td>{{ aclass[3] }}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-      </table>
+      <div class="table-container">
+        <table class="table is-bordered is-striped is-fullwidth has-text-centered">
+          <thead class="has-background-warning">
+            <tr>
+              <th>Pick</th>
+              <th>CRN</th>
+              <th>Course Code</th>
+              <th>Course Title</th>
+              <th>Instructor(s)</th>
+              <th>Semester</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for aclass, instructors in zip(aclasses, instructors) %}
+              <tr>
+                <td>
+                  <label class="checkbox">
+                    <input type="checkbox" name="class_keys" value="{{ [aclass[0], aclass[3]]|tojson  }}"/>
+                  </label>
+                </td>
+                <td><a href="{{ url_for('class_page', crn=aclass[0], semester=aclass[3]) }}">{{ aclass[0] }}</a></td>
+                <td>{{ aclass[1] }}</td>
+                <td>{{ aclass[2] }}</td>
+                <td>
+                  {{ instructors[0] }}
+                  {% for instructor in instructors[1:] %} 
+                  , {{ instructor }}
+                  {% endfor %}
+                </td>
+                <td>{{ aclass[3] }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
 
       <div class="field is-grouped-centered has-text-centered">
         <div class="control">
