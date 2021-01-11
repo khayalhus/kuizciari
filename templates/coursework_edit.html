@@ -1,0 +1,100 @@
+{% extends "layout.html" %}
+{% block title %}Add Coursework{% endblock %}
+{% block link %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+{% endblock %}
+{% block top %}
+<div class="hero-body">
+  <div class="container">
+    <h1 class="title has-text-centered">Add coursework</h1>
+
+    {% for category, message in get_flashed_messages(with_categories=True) %}
+    <div class="notification is-{{category}}" style="width: 80%; margin: 0 auto;">
+      <button class="delete"></button>
+      {{ message }}
+    </div>
+    {% endfor %}
+    
+    <form action="" method="post" name="add_class" style="width: 80%; margin: 0 auto;" class="box has-background-warning">
+      
+      <div class="field">
+        <label for="crn" class="label">CRN</label>
+        <div class="control">
+            <input type="number" name="crn" class="input" min="10000" max="99999" placeholder="Class Reference Number (5 digits)" value="{{ aclass[0] }}" disabled/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="semester" class="label">Semester</label>
+        <div class="control">
+            <input type="number" name="semester" class="input" min="202110" placeholder="Semester number (6 digits)" value="{{ aclass[1] }}" disabled/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="courseCode" class="label">Course Code</label>
+        <div class="control">
+            <input type="text" name="courseCode" class="input" min="202110" placeholder="Course Code (ex. BLG317E)" value="{{ aclass[2] }}" disabled/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="instructorName" class="label">Instructor(s)</label>
+        <div class="control">
+          <select class="form-control" multiple="multiple" id="instructor" name="instructors[]" style="width: 100%" placeholder="test" disabled>
+            {% for instructorID, instructorName in instructors %}
+            <option value="{{ instructorID }}" selected>{{ instructorName }} ({{ instructorID }}) </option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="date" class="label">Date</label>
+        <div class="control">
+            <input type="date" name="date" class="input" placeholder="Assignment deadline day or exam start day" required/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="time" class="label">Time</label>
+        <div class="control">
+            <input type="time" name="time" class="input" placeholder="Assignment deadline hour or exam start time" required/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="grading" class="label">Grading %</label>
+        <div class="control">
+            <input type="number" name="grading" class="input" min="0" max="100" placeholder="Weighted percentage of the coursework" required/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="workType" class="label">Coursework Type</label>
+        <div class="control">
+          <select class="form-control" id="coursework" name="workType" style="width: 100%" required>
+            {% for workType, workTitle in courseworkTypes %}
+            <option value="{{ workType }}">{{ workTitle }} ({{ workType }})</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="control">
+          <button class="button is-primary has-background-white has-text-warning-dark">Save</button>
+        </div>
+      </div>
+    </form>
+
+    <script>
+    $("#coursework").select2();
+    $("#instructor").select2({
+      placeholder: "Full name of instructor(s)"
+    });
+    </script>
+  </div>
+</div>
+{% endblock %}

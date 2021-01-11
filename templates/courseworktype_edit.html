@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block title %}Add Coursework Type{% endblock %}
+{% block top %}
+<div class="hero-body">
+  <div class="container">
+    <h1 class="title has-text-centered">Add coursework type</h1>
+
+    {% for category, message in get_flashed_messages(with_categories=True) %}
+    <div class="notification is-{{category}}" style="margin: 0 auto;">
+      <button class="delete"></button>
+      {{ message }}
+    </div>
+    {% endfor %}
+    
+    <form action="" method="post" name="add_courseworktype" style="width: 80%; margin: 0 auto;" class="box has-background-warning">
+      
+      <div class="field">
+        <label for="courseworkTitle" class="label">Coursework Title</label>
+        <div class="control">
+          <input type="text" name="workTitle" class="input" maxlength="255" placeholder="Generic title of the coursework (ex. Final, Midterm)" required/>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="control">
+          <button class="button is-primary has-text-warning-dark has-background-white">Save</button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
+{% endblock %}

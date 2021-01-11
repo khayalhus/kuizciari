@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS "Coursework" (
   "crn" INTEGER NOT NULL,
   "semester" INTEGER NOT NULL,
   "date" DATE,
+  "time" TIME,
   "grading" INTEGER NOT NULL,
   "workType" INTEGER NOT NULL,
   FOREIGN KEY ("workType") REFERENCES "CourseworkType" ("workType"),

@@ -2,11 +2,68 @@
 {% block title %}Class {{ aclass[0] }}{% endblock %}
 {% block top %}
 <div class="hero-body">
-    <div class="container has-text-centered">
-        <div>
-            <h1 id="override" class="title is-1 inline" style="display: inline;">{{ aclass[2] }}</h1>
+    <div class="container" style="width: 100%;">
+      <div class="container has-text-centered">
+          <div>
+              <h1 id="override" class="title is-1 inline" style="display: inline;">{{ aclass[3] }} ({{ aclass[2] }})</h1>
+          </div>
+          <h2 class="subtitle is-3">{{ aclass[0] }} ({{ aclass[1] }})</h2>
+      </div>
+      <div class="container has-text-centered">
+        <a class="button is-normal is-info" href="{{ url_for('coursework_addition_page', crn=aclass[0], semester=aclass[1]) }}">Add Coursework</a>
+        {% if follows == None %}
+          <a class="button is-normal is-info" href="{{ url_for('login_page', crn=aclass[0], semester=aclass[1]) }}">Follow</a>
+        {% elif follows == False %}
+          <a class="button is-normal is-info is-focused" href="{{ url_for('add_follow_redirector', crn=aclass[0], semester=aclass[1], follows = 'follow') }}">Follow</a>
+        {% elif follows == True %}
+          <a class="button is-normal is-info is-active" href="{{ url_for('add_follow_redirector', crn=aclass[0], semester=aclass[1], follows = 'unfollow') }}">Unfollow</a>
+        {% endif %}
+      </div>
+      {% for category, message in get_flashed_messages(with_categories=True) %}
+        <div class="notification is-{{category}}">
+          <button class="delete"></button>
+          {{ message }}
         </div>
-        <h2 class="subtitle is-3">{{ aclass[0] }} ({{ aclass[1] }})</h2>
+      {% endfor %}
+      
+      <form action="" method="post" name="class_list" enctype="application/json">
+        <div class="table-container">
+          <table class="table is-bordered is-striped is-fullwidth has-text-centered">
+            <thead class="has-background-warning">
+              <tr>
+                <th>Pick</th>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Grading %</th>
+                <th>Coursework Title</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for id, date, time, grading, courseworkTitle in courseworks %}
+                <tr>
+                  <td>
+                    <label class="checkbox">
+                      <input type="checkbox" name="class_keys" value="{{ id }}"/>
+                    </label>
+                  </td>
+                  <td>{{ id }}</td>
+                  <td>{{ date }}</td>
+                  <td>{{ time }}</td>
+                  <td>{{ grading }}</td>
+                  <td>{{ courseworkTitle }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+  
+        <div class="field is-grouped-centered has-text-centered">
+          <div class="control">
+            <button class="button is-danger">Delete</button>
+          </div>
+        </div>
+      </form>
     </div>
-</div>
+  </div>
 {% endblock %}

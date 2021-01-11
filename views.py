@@ -25,9 +25,34 @@ def classes_page():
         return redirect(url_for("classes_page"))
 
 def class_page(crn, semester):
-    aclass = database.get_class(crn, semester)
-    return render_template("class.html", year = year_dec, aclass = aclass)
+    if request.method == "GET":
+        if session.get('logged_in') is not None:
+            userID = session.get('userID')
+            follows = database.get_follow(userID, crn, semester)
+        else:
+            follows = None
+        aclass = database.get_class(crn, semester)
+        courseworks = database.get_courseworks(crn, semester)
+        return render_template("class.html", year = year_dec, aclass = aclass, courseworks = courseworks, follows = follows)
+    elif request.method == "POST":
+        return redirect(url_for("class_page", crn = crn, semester = semester))
 
+def add_follow_redirector(crn, semester, follows):
+    userID = session.get('userID')
+    if userID is not None:
+        if follows == "follow":
+            if database.add_follow(userID, crn, semester) is True:
+                flash("You are now following this class", "success")
+            else:
+                flash("Unable to follow this class", "danger")
+        elif follows == "unfollow":
+            if database.remove_follow(userID, crn, semester) is True:
+                flash("You have unfollowed this class", "success")
+            else:
+                flash("Unable to unfollow this class", "danger")
+    else:
+        flash("You are not logged in", "danger")
+    return redirect(url_for("class_page", crn = crn, semester = semester))
 
 def class_addition_page():
     if request.method == "GET":
@@ -48,7 +73,37 @@ def class_addition_page():
         else:
             flash("Class already exists.", "danger")
             return redirect(url_for("class_addition_page"))
-        
+
+def coursework_addition_page(crn, semester):
+    if request.method == "GET":
+        courseworkTypes = database.get_courseworkTypes()
+        aclass = database.get_class(crn, semester)
+        instructors = database.get_class_instructors(crn, semester)
+        return render_template("coursework_edit.html", year = year_dec, courseworkTypes = courseworkTypes, aclass = aclass, instructors = instructors)
+    elif request.method == "POST":
+        #form_crn = request.form["crn"]
+        #form_semester = request.form["semester"]
+        form_date = request.form["date"]
+        form_time = request.form["time"]
+        form_grading = request.form["grading"]
+        form_workType = request.form["workType"]
+        if database.add_coursework(crn, semester, form_date, form_time, form_grading, form_workType) is True:
+            flash("Coursework has been added to class with CRN " + str(crn) + ".", "success")
+            return redirect(url_for("class_page", crn = crn, semester = semester))
+        else:
+            flash("Could not add coursework to class with CRN" + str(crn) + ".", "danger")
+            return redirect(url_for("coursework_addition_page", crn = crn, semester = semester))
+
+def courseworktype_addition_page():
+    if request.method == "GET":
+        return render_template("courseworktype_edit.html", year = year_dec)
+    elif request.method == "POST":
+        form_workTitle = request.form["workTitle"]
+        if database.add_courseworktype(form_workTitle) is False:
+            flash("An unknown error occured when adding new coursework type.", "danger")
+            return redirect(url_for("courseworktype_addition_page"))
+        flash("Coursework type " + form_workTitle + " has been successfully added to the database.", "success")
+        return redirect(url_for("classes_page"))
 
 def course_addition_page():
     if request.method == "GET":

@@ -44,7 +44,7 @@ def get_classes():
     return classes
 
 def get_class(crn, semester):
-    statement = """SELECT "Class"."crn", "Class"."semester", "courseTitle"
+    statement = """SELECT "Class"."crn", "Class"."semester", "Class"."courseCode", "courseTitle"
                     FROM "Class"
                     LEFT JOIN "Course" ON "Class"."courseCode" = "Course"."courseCode"
                     WHERE
@@ -56,6 +56,39 @@ def get_class(crn, semester):
     cursor.execute(statement, {'crn': crn, 'semester': semester})
     aclass = cursor.fetchone()
     return aclass
+
+def get_courseworks(crn, semester):
+    statement = """SELECT "Coursework"."workID", "Coursework"."date", "Coursework"."time", "Coursework"."grading", "CourseworkType"."workTitle"
+                    FROM "Coursework"
+                    LEFT JOIN "CourseworkType" ON "CourseworkType"."workType" = "Coursework"."workType"
+                    LEFT JOIN "Class" ON "Class"."crn" = "Coursework"."crn" AND "Class"."semester" = "Coursework"."semester"
+                    WHERE
+                    "Class"."crn" = %(crn)s
+                    AND
+                    "Class"."semester" = %(semester)s
+                    ;
+                """
+    cursor.execute(statement, {'crn': crn, 'semester': semester})
+    courseworks = cursor.fetchall()
+    return courseworks
+
+def get_follow(userID, crn, semester):
+    statement = """SELECT "Follows"."userID", "Follows"."crn", "Follows"."semester"
+                    FROM "Follows"
+                    WHERE
+                    "Follows"."userID" = %(userID)s
+                    AND
+                    "Follows"."crn" = %(crn)s
+                    AND
+                    "Follows"."semester" = %(semester)s
+                    ;
+                """
+    cursor.execute(statement, {'userID': userID, 'crn': crn, 'semester': semester})
+    if cursor.fetchone() is not None:
+        follows = True
+    else:
+        follows = False
+    return follows
 
 def delete_class(crn, semester):
     statement = """DELETE FROM "Class"
@@ -73,11 +106,43 @@ def get_instructors():
     instructors = cursor.fetchall()
     return instructors
 
+def get_class_instructors(crn, semester):
+    statement = """SELECT "Instructs"."instructorID", "instructorName" FROM "Instructs"
+                LEFT JOIN "Instructor" ON "Instructor"."instructorID" = "Instructs"."instructorID"
+                WHERE
+                "Instructs"."crn" = %(crn)s
+                AND
+                "Instructs"."semester" = %(semester)s
+                ;"""
+    cursor.execute(statement, {'crn': crn, 'semester': semester})
+    instructors = cursor.fetchall()
+    return instructors
+
 def get_courses():
     statement = """SELECT "courseCode", "courseTitle" FROM "Course";"""
     cursor.execute(statement)
     courses = cursor.fetchall()
     return courses
+'''
+def get_courseworks(crn, semester):
+    statement = """SELECT "date", "time", "grading" "CourseworkType"."workTitle" FROM "Coursework"
+                    WHERE
+                    "Coursework"."crn" = %(crn)s
+                    AND
+                    "Coursework"."semester" = %(semester)s
+                    LEFT JOIN "CourseworkType"
+                    WHERE
+                    "CourseworkType"."workType" = "Coursework"."workType"
+                    ;"""
+    cursor.execute(statement, {'crn': crn, 'semester': semester})
+    courseworks = cursor.fetchall()
+    return courseworks
+'''
+def get_courseworkTypes():
+    statement = """SELECT "workType", "workTitle" FROM "CourseworkType";"""
+    cursor.execute(statement)
+    courseworkTypes = cursor.fetchall()
+    return courseworkTypes
 
 def add_class(crn, semester, courseCode):
     statement = """INSERT INTO "Class" ("crn", "semester", "courseCode")
@@ -119,6 +184,55 @@ def add_instructs(crn, semester, instructorID):
     connection.commit()
     return
 
+def add_courseworktype(workTitle):
+    statement = """INSERT INTO "CourseworkType" ("workTitle")
+                    VALUES(%(workTitle)s);"""
+    try:
+        cursor.execute(statement, {'workTitle': workTitle})
+        connection.commit()
+        return True
+    except dbapi2.DatabaseError:
+        connection.rollback()
+        return False
+
+def add_coursework(crn, semester, date, time, grading, workType):
+    statement = """INSERT INTO "Coursework" ("crn", "semester", "date", "time", "grading", "workType")
+                    VALUES(%(crn)s, %(semester)s, %(date)s, %(time)s, %(grading)s, %(workType)s);"""
+    try:
+        cursor.execute(statement, {'crn': crn, 'semester': semester, 'date': date, 'time': time, 'grading': grading, 'workType': workType})
+        connection.commit()
+        return True
+    except dbapi2.DatabaseError:
+        connection.rollback()
+        return False
+
+def add_follow(userID, crn, semester):
+    statement = """INSERT INTO "Follows" ("userID", "crn", "semester")
+                    VALUES(%(userID)s, %(crn)s, %(semester)s);"""
+    try:
+        cursor.execute(statement, {'userID': userID, 'crn': crn, 'semester': semester})
+        connection.commit()
+        return True
+    except dbapi2.DatabaseError:
+        connection.rollback()
+        return False
+
+def remove_follow(userID, crn, semester):
+    statement = """DELETE FROM "Follows"
+                    WHERE "userID" = %(userID)s
+                    AND
+                    "crn" = %(crn)s
+                    AND "semester" = %(semester)s
+                    ;
+                    """
+    try:
+        cursor.execute(statement, {'userID': userID, 'crn': crn, 'semester': semester})
+        connection.commit()
+        return True
+    except dbapi2.DatabaseError:
+        connection.rollback()
+        return False
+                    
 def signup(mail, password, userType):
     statement = """INSERT INTO "User" ("mail", "password", "salt", "userType")
                     VALUES(%(mail)s, %(password)s, %(salt)s, %(userType)s);"""
