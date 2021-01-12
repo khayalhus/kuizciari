@@ -1,5 +1,3 @@
-import os
-
-SECRET_KEY = os.urandom(24)
+SECRET_KEY = "HerokuDoesNotLikeRandomKeys"
 DEBUG = True
 PORT = 8080
