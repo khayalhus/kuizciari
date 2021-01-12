@@ -1,4 +1,5 @@
+import os
+
+SECRET_KEY = os.urandom(24)
 DEBUG = True
 PORT = 8080
-TEMPLATES_AUTO_RELOAD = True
-SEND_FILE_MAX_AGE_DEFAULT = 0
