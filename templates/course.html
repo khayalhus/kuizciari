@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block title %}Add Course{% endblock %}
+{% block top %}
+<div class="hero-body">
+  <div class="container">
+    <h1 id="override" class="title has-text-centered">{{ course[0] }}</h1>
+    
+    {% for category, message in get_flashed_messages(with_categories=True) %}
+    <div class="notification is-{{category}}" style="width: 80%; margin: 0 auto;">
+      <button class="delete"></button>
+      {{ message }}
+    </div>
+    {% endfor %}
+    <form action="" onsubmit="" method="post" name="course" style="width: 80%; margin: 0 auto;" class="box has-background-warning has-text-centered">
+      
+      <div class="content">
+        <label for="Course Title" class="label">Course Title: </label>
+        <span>{{ course[1] }}</span>
+      </div>
+      <div class="columns">
+        <div class="content column">
+          <label for="Necessity" class="label">Necessity: </label>
+          <span>{{ course[8] }}</span>
+        </div>
+        
+        <div class="content column">
+          <label for="Credits" class="label">Credits: </label>
+          <span>{{ course[3] }}</span>
+        </div>
+
+        <div class="content column">
+          <label for="Pool" class="label">Pool: </label>
+          <span>{{ course[4] }}</span>
+        </div>
+      </div>
+
+      <div class="columns">
+        <div class="content column">
+          <label for="Theoretical" class="label">Theoretical: </label>
+          <span>{{ course[5] }} hours/week</span>
+        </div>
+        
+        <div class="content column">
+          <label for="Tutorial" class="label">Tutorial: </label>
+          <span>{{ course[6] }} hours/week</span>
+        </div>
+
+        <div class="content column">
+          <label for="Laboratory" class="label">Laboratory: </label>
+          <span>{{ course[7] }} hours/week</span>
+        </div>
+      </div>
+
+      <div class="content">
+        <label for="Description" class="label">Description: </label>
+        <p>{{ course[2] }}</p>
+      </div>
+
+      <div class="is-grouped-centered has-text-centered">
+        <a class="button is-info" href="{{ url_for('course_edit_page', courseCode=course[0]) }}">Edit</a>
+        <button class="button is-danger">Delete</button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+{% endblock %}

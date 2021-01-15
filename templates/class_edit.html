@@ -64,6 +64,26 @@
       </div>
 
       <div class="field">
+        <label for="date" class="label">Date</label>
+        <div class="control">
+          <select class="form-control" id="date" name="date" style="width: 100%" required>
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="time" class="label">Time</label>
+        <div class="control">
+            <input type="time" name="time" min="08:30" max="17:30" step="1800" class="input" placeholder="Class start time" required/>
+        </div>
+      </div>
+
+      <div class="field">
         <div class="control">
           <button class="button is-primary has-background-white has-text-warning-dark">Save</button>
         </div>
@@ -72,6 +92,7 @@
 
     <script>
     $("#course").select2();
+    $("#date").select2();
     $("#instructor").select2({
       placeholder: "Full name of instructor(s)"
     });

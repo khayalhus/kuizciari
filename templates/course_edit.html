@@ -12,39 +12,121 @@
     </div>
     {% endfor %}
 
-    <form action="" method="post" name="add_course" style="width: 80%; margin: 0 auto;" class="box has-background-warning">
-      
-      <div class="field">
-        <label for="facultyCode" class="label">Faculty Code</label>
-        <div class="control">
-            <input type="text" name="facultyCode" class="input" minlength="3" maxlength="3" placeholder="Faculty Code (3 letters) (ex. BLG)" required/>
+    <form action="" onsubmit="" method="post" name="add_course" style="width: 80%; margin: 0 auto;" class="box has-background-warning">
+      <div class="columns mb-1">
+        <div class="field column mb-0">
+          <label for="facultyCode" class="label">Faculty Code*</label>
+          <div class="control">
+              <input type="text" name="facultyCode" class="input" minlength="3" maxlength="3" placeholder="3 letters (ex. BLG)" value="{{ values['facultyCode'] }}" required/>
+          </div>
+        </div>
+
+        <div class="field column mb-0">
+          <label for="courseNumber" class="label">Course Number*</label>
+          <div class="control">
+              <input type="number" name="courseNumber" class="input" min="100" max="9999" step="1" placeholder="3 or 4 digits (ex. 317 or 4901)"  value="{{ values['courseNumber'] }}" required/>
+          </div>
         </div>
       </div>
-
       <div class="field">
-        <label for="courseNumber" class="label">Course Number</label>
-        <div class="control">
-            <input type="text" name="courseNumber" class="input" min="100" max="9999" placeholder="Course number (3 or 4 digits) (ex. 317 or 4901)" required/>
-        </div>
-      </div>
-
-      <div class="field">
-        <div class="control">
-          <label class="radio">
+        <div class="control"> 
+          <label for="Language" class="label">Language*</label>
+          {% if values['language'] == "E" %}
+          <label for="English" class="radio">
             <input type="radio" name="language" value="E" checked>
             English
           </label>
-          <label class="radio">
+          <label for="Turkish (or Other)" class="radio">
             <input type="radio" name="language" value="">
             Turkish (or Other)
           </label>
+          {% else %}
+          <label for="English" class="radio">
+            <input type="radio" name="language" value="E">
+            English
+          </label>
+          <label for="Turkish (or Other)" class="radio">
+            <input type="radio" name="language" value="" checked>
+            Turkish (or Other)
+          </label>
+          {% endif %}
+          
+            
+            
+          
         </div>
       </div>
 
       <div class="field">
-        <label for="courseTitle" class="label">Course Title</label>
+        <label for="courseTitle" class="label">Course Title*</label>
         <div class="control">
-            <input type="text" name="courseTitle" class="input" minlength="1" maxlength="255" placeholder="Title of the course (max 255 characters) (ex. Database Systems)" required/>
+            <input type="text" name="courseTitle" class="input" minlength="1" maxlength="255" placeholder="max 255 characters (ex. Database Systems)" value="{{ values['courseTitle'] }}" required/>
+        </div>
+      </div>
+
+      <div class="field checkbox-group">
+        <div class="control">
+          <label for="Necessity" class="label">Necessity</label>
+          <label for="Compulsory" class="checkbox">
+            {% if values['compulsory'] == "C" %}
+            <input type="checkbox" name="compulsory"  value="C" checked>
+            {% else %}
+            <input type="checkbox" name="compulsory"  value="C">
+            {% endif %}
+            Compulsory
+          </label>
+          <label for="Elective" class="checkbox">
+            {% if values['elective'] == "E" %}
+            <input type="checkbox" name="elective"  value="E" checked>
+            {% else %}
+            <input type="checkbox" name="elective"  value="E">
+            {% endif %}
+            Elective
+          </label>
+        </div>
+      </div>
+      
+      <div class="field">
+        <label for="Credits" class="label">Credits*</label>
+        <div class="control">
+            <input type="number" name="credits" class="input" min="1" max="9" step="0.5" placeholder="Credits acquired after completing course (ex. 3)"  value="{{ values['credits'] }}" required/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="Pool" class="label">Pool</label>
+        <div class="control">
+            <input type="text" name="pool" class="input" minlength="0" maxlength="255" placeholder="Whether course is common pool, half-pool etc."  value="{{ values['pool'] }}"/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="Description" class="label">Description</label>
+        <div class="control">
+            <textarea class="textarea" name="description" minlength="0" maxlength="255" placeholder="Optional short description of the course (max. 255 characters)">{{ values['description'] }}</textarea>
+        </div>
+      </div>
+
+      <div class="columns">
+        <div class="field column">
+          <label for="Theoretical" class="label">Theoretical*</label>
+          <div class="control">
+              <input type="number" name="theoretical" class="input" min="0" max="9" step="1" placeholder="hours per week (ex. 3)"  value="{{ values['theoretical'] }}" required/>
+          </div>
+        </div>
+
+        <div class="field column">
+          <label for="Tutorial" class="label">Tutorial*</label>
+          <div class="control">
+              <input type="number" name="tutorial" class="input" min="0" max="9" step="1" placeholder="hours per week (ex. 2)"  value="{{ values['tutorial'] }}" required/>
+          </div>
+        </div>
+
+        <div class="field column">
+          <label for="Laboratory" class="label">Laboratory*</label>
+          <div class="control">
+              <input type="number" name="laboratory" class="input" min="0" max="9" step="1" placeholder="hours per week (ex. 2)" value="{{ values['laboratory'] }}" required/>
+          </div>
         </div>
       </div>
 
@@ -56,5 +138,4 @@
     </form>
   </div>
 </div>
-
 {% endblock %}

@@ -11,6 +11,8 @@ app.add_url_rule("/add/class", view_func=views.class_addition_page, methods=["GE
 app.add_url_rule("/add/course", view_func=views.course_addition_page, methods=["GET", "POST"])
 app.add_url_rule("/add/instructor", view_func=views.instructor_addition_page, methods=["GET", "POST"])
 app.add_url_rule("/add/courseworktype", view_func=views.courseworktype_addition_page, methods=["GET", "POST"])
+app.add_url_rule("/course/<string:courseCode>", view_func=views.course_page, methods=["GET", "POST"])
+app.add_url_rule("/course/<string:courseCode>/edit", view_func=views.course_edit_page, methods=["GET", "POST"])
 app.add_url_rule("/class/<int:semester>/<int:crn>", view_func=views.class_page, methods=["GET", "POST"])
 app.add_url_rule("/class/<int:semester>/<int:crn>/addwork", view_func=views.coursework_addition_page, methods=["GET", "POST"])
 app.add_url_rule("/class/<int:semester>/<int:crn>/<string:follows>", view_func=views.add_follow_redirector)
@@ -18,6 +20,7 @@ app.add_url_rule("/login", view_func=views.login_page, methods=["GET", "POST"])
 app.add_url_rule("/signup", view_func=views.signup_page, methods=["GET", "POST"])
 app.add_url_rule("/logout", view_func=views.logout_page)
 app.add_url_rule("/profile", view_func=views.profile_page)
+
 
 if __name__ == "__main__":
     initdb.initialize()

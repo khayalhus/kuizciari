@@ -118,11 +118,55 @@ def get_class_instructors(crn, semester):
     instructors = cursor.fetchall()
     return instructors
 
+def get_course(courseCode):
+    statement = """SELECT "courseCode", "courseTitle", "courseDescription", "credits", "pool", "theoretical",  "tutorial", "laboratory", "necessity"
+                    FROM "Course"
+                    WHERE
+                    "courseCode" = %(courseCode)s
+                    ;
+                """
+    cursor.execute(statement, {'courseCode': courseCode})
+    acourse = cursor.fetchone()
+    return acourse
+
+def update_course(courseCode, newCourseCode, courseTitle, description, credit, necessity, theoretical, tutorial, laboratory, pool):
+    statement = """UPDATE "Course"
+                    SET "courseCode" = %(newCourseCode)s,
+                    "courseTitle" = %(courseTitle)s,
+                    "courseDescription" = %(courseCode)s,
+                    "credits" = %(credits)s,
+                    "necessity" = %(necessity)s,
+                    "theoretical" = %(theoretical)s,
+                    "tutorial" = %(tutorial)s,
+                    "laboratory" = %(laboratory)s,
+                    "pool" = %(pool)s
+                    WHERE "courseCode" = %(courseCode)s;
+                    """
+    try:
+        cursor.execute(statement, {'courseCode': courseCode, 'newCourseCode': newCourseCode, 'courseTitle': courseTitle, 'courseDescription': description, 'credits': credit, 'necessity': necessity, 'theoretical': theoretical, 'tutorial': tutorial, 'laboratory': laboratory,'pool': pool})
+        connection.commit()
+        return True
+    except dbapi2.DatabaseError:
+        connection.rollback()
+        return False
+
 def get_courses():
     statement = """SELECT "courseCode", "courseTitle" FROM "Course";"""
     cursor.execute(statement)
     courses = cursor.fetchall()
     return courses
+
+def delete_course(courseCode):
+    statement = """DELETE FROM "Course"
+                    WHERE "courseCode" = %(courseCode)s;
+                    """
+    try:
+        cursor.execute(statement, {'courseCode': courseCode})
+        connection.commit()
+        return True
+    except dbapi2.DatabaseError:
+        connection.rollback()
+        return False
 '''
 def get_courseworks(crn, semester):
     statement = """SELECT "date", "time", "grading" "CourseworkType"."workTitle" FROM "Coursework"
@@ -155,11 +199,11 @@ def add_class(crn, semester, courseCode):
         connection.rollback()
         return False
 
-def add_course(courseCode, courseTitle):
-    statement = """INSERT INTO "Course" ("courseCode", "courseTitle")
-                    VALUES(%(courseCode)s, %(courseTitle)s);"""
+def add_course(courseCode, courseTitle, description, credit, necessity, theoretical, tutorial, laboratory, pool):
+    statement = """INSERT INTO "Course" ("courseCode", "courseTitle", "courseDescription", "credits", "necessity", "theoretical", "tutorial", "laboratory", "pool")
+                    VALUES(%(courseCode)s, %(courseTitle)s, %(courseDescription)s, %(credits)s, %(necessity)s, %(theoretical)s, %(tutorial)s, %(laboratory)s, %(pool)s);"""
     try:
-        cursor.execute(statement, {'courseCode': courseCode, 'courseTitle': courseTitle})
+        cursor.execute(statement, {'courseCode': courseCode, 'courseTitle': courseTitle, 'courseDescription': description, 'credits': credit, 'necessity': necessity, 'theoretical': theoretical, 'tutorial': tutorial, 'laboratory': laboratory,'pool': pool})
         connection.commit()
         return True
     except dbapi2.DatabaseError:
@@ -239,8 +283,6 @@ def signup(mail, password, userType):
                     
     salt = os.urandom(32)
     key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
-
-    password_hashed = key + salt
     
     cursor.execute(statement, {'mail': mail, 'password': key, 'salt': salt, 'userType': userType})
     connection.commit()

@@ -34,7 +34,7 @@
                   </label>
                 </td>
                 <td><a href="{{ url_for('class_page', crn=aclass[0], semester=aclass[3]) }}">{{ aclass[0] }}</a></td>
-                <td>{{ aclass[1] }}</td>
+                <td><a href="{{ url_for('course_page', courseCode=aclass[1]) }}">{{ aclass[1] }}</a></td>
                 <td>{{ aclass[2] }}</td>
                 <td>
                   {{ instructors[0] }}

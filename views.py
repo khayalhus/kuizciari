@@ -1,5 +1,6 @@
 from flask import current_app, render_template, request, redirect, url_for, abort, session, flash
 from datetime import datetime
+from string import ascii_letters
 import json
 import database
 import sys
@@ -107,14 +108,28 @@ def courseworktype_addition_page():
 
 def course_addition_page():
     if request.method == "GET":
-        return render_template("course_edit.html", year = year_dec)
+        values = {"facultyCode": "", "courseNumber": "", "language": "E", "courseTitle": "", "description": "", "credits": "", "compulsory": "", "elective": "", "theoretical": "", "tutorial": "", "laboratory": "", "pool": ""}
+        return render_template("course_edit.html", year = year_dec, values = values)
     elif request.method == "POST":
         form_facultyCode = request.form["facultyCode"]
         form_courseNumber = request.form["courseNumber"]
         form_language = request.form["language"]
         form_courseTitle = request.form["courseTitle"]
+        form_description = request.form["description"]
+        form_credit = request.form["credits"]
+        form_compulsory = request.form.get("compulsory")
+        form_elective = request.form.get("elective")
+        form_theoretical = request.form["theoretical"]
+        form_tutorial = request.form["tutorial"]
+        form_laboratory = request.form["laboratory"]
+        form_pool = request.form["pool"]
+        necessity = ""
+        if form_compulsory is not None:
+            necessity += form_compulsory
+        if form_elective is not None:
+            necessity += form_elective
         courseCode = "" + form_facultyCode + form_courseNumber + form_language
-        if database.add_course(courseCode, form_courseTitle) is False:
+        if database.add_course(courseCode, form_courseTitle, form_description, form_credit, necessity, form_theoretical, form_tutorial, form_laboratory, form_pool) is False:
             flash("Course Code " + str(courseCode) + " already exists.", "danger")
             return redirect(url_for("course_addition_page"))
         flash("Course Code " + str(courseCode) + " has been successfully added.", "success")
@@ -130,6 +145,62 @@ def instructor_addition_page():
             return redirect(url_for("instructor_addition_page"))
         flash("Instructor " + form_instructorName + " has been successfully added to the database.", "success")
         return redirect(url_for("class_addition_page"))
+
+def course_page(courseCode):
+    if request.method == "GET":
+        course = database.get_course(courseCode)
+        if course is not None:
+            return render_template("course.html", year = year_dec, course=course)
+        else:
+            flash("Course with code " + str(courseCode) + " could not be found.", "danger")
+            return redirect(url_for("classes_page"))
+    elif request.method == "POST":
+        if database.delete_course(courseCode) is False:
+            flash("An unknown error occured when removing course.", "danger")
+            return redirect(url_for("course_page", courseCode=courseCode))
+        flash("Course with code " + str(courseCode) + " and all related classes has been successfully removed from the database.", "success")
+        return redirect(url_for("classes_page"))
+
+def course_edit_page(courseCode):
+    if request.method == "GET":
+        raw_values = database.get_course(courseCode)
+        if raw_values is None:
+            flash("An unknown error occured when trying to open course for editing.", "danger")
+            return redirect(url_for("classes_page"))
+        else:
+            #statement = """SELECT "courseCode", "courseTitle", "courseDescription", "credits", "pool", "theoretical",  "tutorial", "laboratory", "necessity"
+            facultyCode = raw_values[0].rstrip("E").rstrip("0123456789")
+            courseNumber = raw_values[0].lstrip(ascii_letters).rstrip("E")
+            language = raw_values[0].lstrip(ascii_letters).lstrip("0123456789")
+            compulsory = raw_values[8].strip("E")
+            elective = raw_values[8].strip("C")
+            mapped_values = {"facultyCode": facultyCode, "courseNumber": courseNumber, "language": language, "courseTitle": raw_values[1], "description": raw_values[2], "credits": raw_values[3], "compulsory": compulsory, "elective": elective, "theoretical": raw_values[5], "tutorial": raw_values[6], "laboratory": raw_values[7], "pool": raw_values[4]}
+            return render_template("course_edit.html", year = year_dec, values = mapped_values)
+    if request.method == "POST":
+        form_facultyCode = request.form["facultyCode"]
+        form_courseNumber = request.form["courseNumber"]
+        form_language = request.form["language"]
+        form_courseTitle = request.form["courseTitle"]
+        form_description = request.form["description"]
+        form_credit = request.form["credits"]
+        form_compulsory = request.form.get("compulsory")
+        form_elective = request.form.get("elective")
+        form_theoretical = request.form["theoretical"]
+        form_tutorial = request.form["tutorial"]
+        form_laboratory = request.form["laboratory"]
+        form_pool = request.form["pool"]
+        necessity = ""
+        if form_compulsory is not None:
+            necessity += form_compulsory
+        if form_elective is not None:
+            necessity += form_elective
+        newCourseCode = "" + form_facultyCode + form_courseNumber + form_language
+        if database.update_course(courseCode, newCourseCode, form_courseTitle, form_description, form_credit, necessity, form_theoretical, form_tutorial, form_laboratory, form_pool) is False:
+            flash("Could not update course " + str(courseCode) + " with the given values.", "danger")
+            return redirect(url_for("course_edit_page", courseCode=courseCode))
+        else:
+            flash("Course " + str(courseCode) + " has been successfully updated.", "success")
+            return redirect(url_for("course_page", courseCode=newCourseCode))
 
 def login_page():
     if request.method == "GET":
