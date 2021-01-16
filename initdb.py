@@ -43,6 +43,8 @@ CREATE TABLE IF NOT EXISTS "Class" (
   "courseCode" VARCHAR(255) NOT NULL,
   "passGrade" INTEGER,
   "vfGrade" INTEGER,
+  "quota" INTEGER,
+  "enrolled" INTEGER,
   "syllabus" BYTEA,
   FOREIGN KEY ("courseCode") REFERENCES "Course" ("courseCode") ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY ("crn", "semester")

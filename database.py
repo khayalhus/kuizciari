@@ -57,8 +57,21 @@ def get_class(crn, semester):
     aclass = cursor.fetchone()
     return aclass
 
+def get_whole_class(crn, semester):
+    statement = """SELECT "Class"."crn", "Class"."semester", "Class"."courseCode", "passGrade", "vfGrade", "quota", "enrolled"
+                    FROM "Class"
+                    WHERE
+                    "Class"."crn" = %(crn)s
+                    AND
+                    "Class"."semester" = %(semester)s
+                    ;
+                """
+    cursor.execute(statement, {'crn': crn, 'semester': semester})
+    aclass = cursor.fetchone()
+    return aclass
+
 def get_courseworks(crn, semester):
-    statement = """SELECT "Coursework"."workID", "Coursework"."date", "Coursework"."time", "Coursework"."grading", "CourseworkType"."workTitle"
+    statement = """SELECT "Coursework"."workID", "CourseworkType"."workTitle", "Coursework"."startdate", "Coursework"."starttime", "Coursework"."enddate", "Coursework"."endtime", "Coursework"."grading", "Coursework"."workDescription"
                     FROM "Coursework"
                     LEFT JOIN "CourseworkType" ON "CourseworkType"."workType" = "Coursework"."workType"
                     LEFT JOIN "Class" ON "Class"."crn" = "Coursework"."crn" AND "Class"."semester" = "Coursework"."semester"
@@ -188,11 +201,32 @@ def get_courseworkTypes():
     courseworkTypes = cursor.fetchall()
     return courseworkTypes
 
-def add_class(crn, semester, courseCode):
-    statement = """INSERT INTO "Class" ("crn", "semester", "courseCode")
-                    VALUES(%(crn)s, %(semester)s, %(courseCode)s);"""
+def add_class(crn, semester, courseCode, passGrade, vfGrade, quota, enrolled):
+    statement = """INSERT INTO "Class" ("crn", "semester", "courseCode", "passGrade", "vfGrade", "quota", "enrolled")
+                    VALUES(%(crn)s, %(semester)s, %(courseCode)s, %(passGrade)s, %(vfGrade)s, %(quota)s, %(enrolled)s);"""
     try:
-        cursor.execute(statement, {'crn': crn, 'semester': semester, 'courseCode': courseCode})
+        cursor.execute(statement, {'crn': crn, 'semester': semester, 'courseCode': courseCode, 'passGrade': passGrade, 'vfGrade': vfGrade, 'quota': quota, 'enrolled': enrolled})
+        connection.commit()
+        return True
+    except dbapi2.DatabaseError:
+        connection.rollback()
+        return False
+
+def update_class(crn, semester, newcrn, newsemester, courseCode, passGrade, vfGrade, quota, enrolled):
+    statement = """UPDATE "Class"
+                    SET "crn" = %(newcrn)s,
+                    "semester" = %(newsemester)s,
+                    "courseCode" = %(courseCode)s,
+                    "passGrade" = %(passGrade)s,
+                    "vfGrade" = %(vfGrade)s,
+                    "quota" = %(quota)s,
+                    "enrolled" = %(enrolled)s
+                    WHERE "crn" = %(crn)s
+                    AND
+                    "semester" = %(semester)s
+                    ;"""
+    try:
+        cursor.execute(statement, {'crn': crn, 'newcrn': newcrn, 'semester': semester, 'newsemester': newsemester, 'courseCode': courseCode, 'passGrade': passGrade, 'vfGrade': vfGrade, 'quota': quota, 'enrolled': enrolled})
         connection.commit()
         return True
     except dbapi2.DatabaseError:
@@ -228,6 +262,22 @@ def add_instructs(crn, semester, instructorID):
     connection.commit()
     return
 
+def remove_instructs(crn, semester, instructorID):
+    statement = """DELETE FROM "Instructs"
+                    WHERE "crn" = %(crn)s
+                    AND
+                    "instructorID" = %(instructorID)s
+                    AND "semester" = %(semester)s
+                    ;
+                    """
+    try:
+        cursor.execute(statement, {'instructorID': instructorID, 'crn': crn, 'semester': semester})
+        connection.commit()
+        return True
+    except dbapi2.DatabaseError:
+        connection.rollback()
+        return False
+
 def add_courseworktype(workTitle):
     statement = """INSERT INTO "CourseworkType" ("workTitle")
                     VALUES(%(workTitle)s);"""
@@ -239,11 +289,11 @@ def add_courseworktype(workTitle):
         connection.rollback()
         return False
 
-def add_coursework(crn, semester, date, time, grading, workType):
-    statement = """INSERT INTO "Coursework" ("crn", "semester", "date", "time", "grading", "workType")
+def add_coursework(crn, semester, startdate, starttime, enddate, endtime, grading, description, workType):
+    statement = """INSERT INTO "Coursework" ("crn", "semester", "startdate", "starttime", "enddate", "endtime", "grading", "workType")
                     VALUES(%(crn)s, %(semester)s, %(date)s, %(time)s, %(grading)s, %(workType)s);"""
     try:
-        cursor.execute(statement, {'crn': crn, 'semester': semester, 'date': date, 'time': time, 'grading': grading, 'workType': workType})
+        cursor.execute(statement, {'crn': crn, 'semester': semester, 'startdate': startdate, 'starttime': starttime, 'enddate': enddate, 'endtime': endtime, 'grading': grading, 'description': description, 'workType': workType})
         connection.commit()
         return True
     except dbapi2.DatabaseError:

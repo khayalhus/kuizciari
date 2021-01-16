@@ -33,8 +33,13 @@ def class_page(crn, semester):
         else:
             follows = None
         aclass = database.get_class(crn, semester)
-        courseworks = database.get_courseworks(crn, semester)
-        return render_template("class.html", year = year_dec, aclass = aclass, courseworks = courseworks, follows = follows)
+        raw_courseworks = database.get_courseworks(crn, semester)
+        mapped_courseworks = []
+        if raw_courseworks:
+            print('WHAT', file=sys.stderr)
+            mapped_courseworks = {'id': raw_courseworks[0], 'title': raw_courseworks[1], 'startdate': raw_courseworks[2], 'starttime': raw_courseworks[3], 'enddate': raw_courseworks[4], 'endtime': raw_courseworks[5], 'grading': raw_courseworks[6], 'description': raw_courseworks[7]}
+        
+        return render_template("class.html", year = year_dec, aclass = aclass, courseworks = mapped_courseworks, follows = follows)
     elif request.method == "POST":
         return redirect(url_for("class_page", crn = crn, semester = semester))
 
@@ -57,15 +62,28 @@ def add_follow_redirector(crn, semester, follows):
 
 def class_addition_page():
     if request.method == "GET":
+        values = {'crn': "", 'semester': "", 'courseCode': "", 'instructors': [], 'vfGrade': "", 'passGrade': "", 'quota': "", 'enrolled': "", 'syllabus': ""}
         instructors = database.get_instructors()
         courses = database.get_courses()
-        return render_template("class_edit.html", year = year_dec, courses = courses, instructors = instructors, zip=zip)
+        return render_template("class_edit.html", year = year_dec, courses = courses, instructors = instructors, zip=zip, values = values)
     elif request.method == "POST":
         form_crn = request.form["crn"]
         form_semester = request.form["semester"]
         form_courseCode = request.form["courseCode"]
         form_instructorIDs = request.form.getlist("instructors[]")
-        if database.add_class(form_crn, form_semester, form_courseCode) is True:
+        form_passGrade = request.form["passGrade"]
+        form_vfGrade = request.form["vfGrade"]
+        form_quota = request.form["quota"]
+        form_enrolled = request.form["enrolled"]
+        if form_passGrade is "":
+            form_passGrade = None
+        if form_vfGrade is "":
+            form_vfGrade = None
+        if form_quota is "":
+            form_quota = None
+        if form_enrolled is "":
+            form_enrolled = None
+        if database.add_class(form_crn, form_semester, form_courseCode, form_passGrade, form_vfGrade, form_quota, form_enrolled) is True:
             for form_instructorID in form_instructorIDs:
                 if database.add_instructs(form_crn, form_semester, form_instructorID) is False:
                     flash("Instructor " + str(form_instructorID) + " is already assigned to this class.", "danger")
@@ -75,8 +93,65 @@ def class_addition_page():
             flash("Class already exists.", "danger")
             return redirect(url_for("class_addition_page"))
 
+def class_edit_page(crn, semester):
+    if request.method == "GET":
+        instructorIDs = []
+        for instructor_info in database.get_class_instructors(crn, semester):
+            instructorIDs.append(instructor_info[0])
+        aclass = database.get_whole_class(crn, semester)
+        instructors = database.get_instructors()
+        courses = database.get_courses()
+        mapped_values = {'crn': crn, 'semester': semester, 'courseCode': aclass[2], 'instructors': instructorIDs, 'vfGrade': aclass[4], 'passGrade': aclass[3], 'quota': aclass[5], 'enrolled': aclass[6], 'syllabus': ""}
+        for key in mapped_values.keys():
+            if mapped_values[key] is None:
+                mapped_values[key] = ""
+        return render_template("class_edit.html", year = year_dec, courses = courses, instructors = instructors, zip=zip, values = mapped_values)
+    elif request.method == "POST":
+        form_crn = request.form["crn"]
+        form_semester = request.form["semester"]
+        form_courseCode = request.form["courseCode"]
+        form_instructorIDs = request.form.getlist("instructors[]")
+        form_passGrade = request.form["passGrade"]
+        form_vfGrade = request.form["vfGrade"]
+        form_quota = request.form["quota"]
+        form_enrolled = request.form["enrolled"]
+
+        if form_passGrade == "":
+            form_passGrade = None
+        if form_vfGrade == "":
+            form_vfGrade = None
+        if form_quota == "":
+            form_quota = None
+        if form_enrolled == "":
+            form_enrolled = None
+
+        instructorIDs = []
+        for instructor_info in database.get_class_instructors(crn, semester):
+            instructorIDs.append(instructor_info[0])
+
+        if database.update_class(crn, semester, form_crn, form_semester, form_courseCode, form_passGrade, form_vfGrade, form_quota, form_enrolled) is True:
+            for form_instructorID in form_instructorIDs:
+                removed = False
+                for instructorID in instructorIDs:
+                    if form_instructorID == str(instructorID):
+                        instructorIDs.remove(instructorID)
+                        removed = True
+                        break
+                if removed is False:
+                    if database.add_instructs(form_crn, form_semester, form_instructorID) is False:
+                        flash("Instructor " + str(form_instructorID) + " is already assigned to this class.", "danger")
+            for instructorID in instructorIDs:
+                database.remove_instructs(form_crn, form_semester, instructorID)
+            flash("Class with CRN " + form_crn +  " has been updated.", "success")
+            return redirect(url_for("class_page", crn = form_crn, semester = form_semester))
+        else:
+            flash("Class with CRN " + str(crn) +  " could not be updated.", "danger")
+            return redirect(url_for("class_edit_page", crn = crn, semester=semester))
+
 def coursework_addition_page(crn, semester):
     if request.method == "GET":
+        #def add_coursework(crn, semester, startdate, starttime, enddate, endtime, grading, description, workType):
+        values = {'crn': "", 'semester': "", 'startdate': "", 'starttime': "", 'enddate': "", 'endtime': "", 'grading': "", 'description': "", 'workType': ""}
         courseworkTypes = database.get_courseworkTypes()
         aclass = database.get_class(crn, semester)
         instructors = database.get_class_instructors(crn, semester)

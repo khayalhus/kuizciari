@@ -19,13 +19,13 @@
           <a class="button is-normal is-info is-active" href="{{ url_for('add_follow_redirector', crn=aclass[0], semester=aclass[1], follows = 'unfollow') }}">Unfollow</a>
         {% endif %}
       </div>
+
       {% for category, message in get_flashed_messages(with_categories=True) %}
         <div class="notification is-{{category}}">
           <button class="delete"></button>
           {{ message }}
         </div>
       {% endfor %}
-      
       <form action="" method="post" name="class_list" enctype="application/json">
         <div class="table-container">
           <table class="table is-bordered is-striped is-fullwidth has-text-centered">
@@ -33,14 +33,16 @@
               <tr>
                 <th>Pick</th>
                 <th>ID</th>
-                <th>Date</th>
-                <th>Time</th>
+                <th>Start date</th>
+                <th>Start time</th>
+                <th>End date</th>
+                <th>End time</th>
                 <th>Grading %</th>
                 <th>Coursework Title</th>
               </tr>
             </thead>
             <tbody>
-              {% for id, date, time, grading, courseworkTitle in courseworks %}
+              {% for id, startdate, starttime, enddate, endtime, grading, title, description in courseworks %}
                 <tr>
                   <td>
                     <label class="checkbox">
@@ -48,10 +50,12 @@
                     </label>
                   </td>
                   <td>{{ id }}</td>
-                  <td>{{ date }}</td>
-                  <td>{{ time }}</td>
+                  <td>{{ startdate }}</td>
+                  <td>{{ starttime }}</td>
+                  <td>{{ enddate }}</td>
+                  <td>{{ endtime }}</td>
                   <td>{{ grading }}</td>
-                  <td>{{ courseworkTitle }}</td>
+                  <td>{{ title }}</td>
                 </tr>
               {% endfor %}
             </tbody>
@@ -60,6 +64,7 @@
   
         <div class="field is-grouped-centered has-text-centered">
           <div class="control">
+            <a class="button is-info" href="{{ url_for('class_edit_page', crn = aclass[0], semester = aclass[1]) }}">Edit</a>
             <button class="button is-danger">Delete</button>
           </div>
         </div>
