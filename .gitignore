@@ -182,3 +182,4 @@ About
 flask/Scripts/python.exe
 flask/pyvenv.cfg
 flask/Scripts/pythonw.exe
+.vscode/settings.json
