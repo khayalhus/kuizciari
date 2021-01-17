@@ -19,14 +19,14 @@
     <form method="post" name="add_courseworktype" style="width: 80%; margin: 0 auto;" class="box has-background-warning">
       
       <div class="field">
-        <label for="courseworkTitle" class="label">Coursework Title*</label>
+        <label for="workTitle" class="label">Coursework Title*</label>
         <div class="control">
-          <input type="text" name="workTitle" class="input" maxlength="255" placeholder="Generic title of the coursework (ex. Final, Midterm)" required/>
+          <input type="text" name="workTitle" id="workTitle" class="input" maxlength="255" placeholder="Generic title of the coursework (ex. Final, Midterm)" required/>
         </div>
       </div>
 
       <div class="field">
-        <label for="Deadline Type" class="label">Deadline Type*</label>
+        <label for="deadlineType" class="label">Deadline Type*</label>
         <div class="control">
           <select class="form-control" id="deadlineType" name="deadlineType" style="width: 100%" required>
             <option value="start">Show Start Time</option>

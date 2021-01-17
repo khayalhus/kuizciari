@@ -16,26 +16,27 @@
     </div>
     {% endfor %}
     
-    <form action="" method="post" name="add_class" style="width: 80%; margin: 0 auto;" class="box has-background-warning">
+    <form method="post" name="add_class" style="width: 80%; margin: 0 auto;" class="box has-background-warning">
       
       <div class="field">
         <label for="crn" class="label">CRN</label>
         <div class="control">
-            <input type="number" name="crn" class="input" min="10000" max="99999" placeholder="Class Reference Number (5 digits)" value="{{ values['crn'] }}" required/>
+            <input type="number" name="crn" id="crn" class="input" min="10000" max="99999" placeholder="Class Reference Number (5 digits)" value="{{ values['crn'] }}" required/>
         </div>
       </div>
 
       <div class="field">
         <label for="semester" class="label">Semester</label>
         <div class="control">
-            <input type="number" name="semester" class="input" min="202110" placeholder="Semester number (6 digits)" value="{{ values['semester'] }}" required/>
+            <input type="number" name="semester" id="semester" class="input" min="202110" placeholder="Semester number (6 digits)" value="{{ values['semester'] }}" required/>
         </div>
       </div>
 
       <div class="field">
-        <label for="courseCode" class="label">Course Code</label>
+        <label for="course" class="label">Course Code</label>
         <div class="control">
           <select class="form-control" id="course" name="courseCode" style="width: 100%" required>
+            <option value="">&nbsp;</option>
             {% for courseCode, courseTitle in courses %}
             <option value="{{ courseCode }}">{{ courseCode }}</option>
             {% endfor %}
@@ -53,7 +54,7 @@
       -->
 
       <div class="field">
-        <label for="instructorName" class="label">Instructor(s)</label>
+        <label for="instructor" class="label">Instructor(s)</label>
         <div class="control">
           <select class="form-control" multiple="multiple" id="instructor" name="instructors[]" style="width: 100%" placeholder="test" required>
             {% for instructorID, instructorName in instructors %}
@@ -65,32 +66,32 @@
 
       <div class="columns mb-1">
         <div class="field column mb-0">
-          <label for="Quota" class="label">Quota</label>
+          <label for="quota" class="label">Quota</label>
           <div class="control">
-              <input type="number" name="quota" class="input" min="0" step="1" placeholder="Max quota of class" value="{{ values['quota'] }}"/>
+              <input type="number" name="quota" id="quota" class="input" min="0" step="1" placeholder="Max quota of class" value="{{ values['quota'] }}"/>
           </div>
         </div>
 
         <div class="field column mb-0">
-          <label for="Enrolled" class="label">Enrolled</label>
+          <label for="enrolled" class="label">Enrolled</label>
           <div class="control">
-              <input type="number" name="enrolled" class="input" min="0" step="1" placeholder="Amount of students enrolled to class"  value="{{ values['enrolled'] }}"/>
+              <input type="number" name="enrolled" id="enrolled" class="input" min="0" step="1" placeholder="Amount of students enrolled to class"  value="{{ values['enrolled'] }}"/>
           </div>
         </div>
       </div>
 
       <div class="columns mb-1">
         <div class="field column mb-0">
-          <label for="Passing Grade" class="label">Passing Grade</label>
+          <label for="passGrade" class="label">Passing Grade</label>
           <div class="control">
-              <input type="number" name="passGrade" class="input" min="0" step="1" max="100" placeholder="Total weighted average required to pass class" value="{{ values['passGrade'] }}"/>
+              <input type="number" name="passGrade" id="passGrade" class="input" min="0" step="1" max="100" placeholder="Total weighted average required to pass class" value="{{ values['passGrade'] }}"/>
           </div>
         </div>
 
         <div class="field column mb-0">
-          <label for="VF Grade" class="label">VF Grade</label>
+          <label for="vfGrade" class="label">VF Grade</label>
           <div class="control">
-              <input type="number" name="vfGrade" class="input" min="0" step="1" max="100" placeholder="Total weighted average required to attend final"  value="{{ values['vfGrade'] }}"/>
+              <input type="number" name="vfGrade" id="vfGrade" class="input" min="0" step="1" max="100" placeholder="Total weighted average required to attend final"  value="{{ values['vfGrade'] }}"/>
           </div>
         </div>
       </div>

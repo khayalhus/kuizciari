@@ -15,30 +15,24 @@
         </div>
         {% endfor %}
 
-        <form action="" method="post" class="box has-background-warning">
+        <form method="post" class="box has-background-warning">
           <div class="field">
-            <label for="" class="label">Email</label>
+            <label for="email" class="label">Email</label>
             <div class="control has-icons-left">
-              <input type="email" name="email" placeholder="email@itu.edu.tr" class="input" required>
+              <input type="email" name="email" id="email" placeholder="email@itu.edu.tr" class="input" required>
               <span class="icon is-small is-left has-text-dark">
                 <i class="fa fa-envelope "></i>
               </span>
             </div>
           </div>
           <div class="field">
-            <label for="" class="label">Password</label>
+            <label for="password" class="label">Password</label>
             <div class="control has-icons-left">
-              <input type="password" name="password" placeholder="At least 8 characters" minlength="8" class="input" required>
+              <input type="password" name="password" id="password" placeholder="At least 8 characters" minlength="8" class="input" required>
               <span class="icon is-small is-left has-text-dark">
                 <i class="fa fa-lock"></i>
               </span>
             </div>
-          </div>
-          <div class="field">
-            <label for="" class="checkbox">
-              <input type="checkbox" name="remember">
-              Remember me
-            </label>
           </div>
           <div class="field">
             <button class="button has-text-warning-dark">

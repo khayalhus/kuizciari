@@ -21,18 +21,18 @@
 
         <form action="" method="post" class="box has-background-warning">
           <div class="field">
-            <label for="" class="label">Email</label>
+            <label for="email" class="label">Email</label>
             <div class="control has-icons-left">
-              <input type="email" name="email" placeholder="email@itu.edu.tr" class="input" required>
+              <input type="email" id="email" name="email" placeholder="email@itu.edu.tr" class="input" required>
               <span class="icon is-small is-left has-text-dark">
                 <i class="fa fa-envelope "></i>
               </span>
             </div>
           </div>
           <div class="field">
-            <label for="" class="label">Password</label>
+            <label for="password" class="label">Password</label>
             <div class="control has-icons-left">
-              <input type="password" name="password" placeholder="At least 8 characters" minlength="8" class="input" required>
+              <input type="password" id="password" name="password" placeholder="At least 8 characters" minlength="8" class="input" required>
               <span class="icon is-small is-left has-text-dark">
                 <i class="fa fa-lock"></i>
               </span>
@@ -42,6 +42,7 @@
             <label for="userType" class="label">Account Type</label>
             <div class="control">
               <select class="form-control" id="userType" name="userType" style="width: 100%" required>
+                <option value="">&nbsp;</option>
                 <option value="Student">Student</option>
                 <option value="Instructor">Instructor</option>
               </select>

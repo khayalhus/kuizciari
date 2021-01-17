@@ -54,32 +54,32 @@
       </div>
       <div class="columns mb-1">
         <div class="field column mb-0">
-          <label for="date" class="label">Start Date</label>
+          <label for="startdate" class="label">Start Date</label>
           <div class="control">
-              <input type="date" name="startdate" class="input" placeholder="Assignment deadline day or exam start day" value="{{ values['startdate'] }}" required/>
+              <input type="date" name="startdate" id="startdate" class="input" placeholder="Assignment deadline day or exam start day" value="{{ values['startdate'] }}" required/>
           </div>
         </div>
 
         <div class="field column mb-0">
-          <label for="time" class="label">Start Time</label>
+          <label for="starttime" class="label">Start Time</label>
           <div class="control">
-              <input type="time" name="starttime" class="input" placeholder="Assignment deadline hour or exam start time" value="{{ values['starttime'] }}" required/>
+              <input type="time" name="starttime" id="starttime" class="input" placeholder="Assignment deadline hour or exam start time" value="{{ values['starttime'] }}" required/>
           </div>
         </div>
       </div>
 
       <div class="columns mb-1">
         <div class="field column mb-0">
-          <label for="date" class="label">End Date</label>
+          <label for="enddate" class="label">End Date</label>
           <div class="control">
-              <input type="date" name="enddate" class="input" placeholder="Assignment deadline day or exam start day" value="{{ values['enddate'] }}" required/>
+              <input type="date" name="enddate" id="enddate" class="input" placeholder="Assignment deadline day or exam start day" value="{{ values['enddate'] }}" required/>
           </div>
         </div>
 
         <div class="field column mb-0">
-          <label for="time" class="label">End Time</label>
+          <label for="endtime" class="label">End Time</label>
           <div class="control">
-              <input type="time" name="endtime" class="input" placeholder="Assignment deadline hour or exam start time" value="{{ values['endtime'] }}" required/>
+              <input type="time" name="endtime" id="endtime" class="input" placeholder="Assignment deadline hour or exam start time" value="{{ values['endtime'] }}" required/>
           </div>
         </div>
       </div>
@@ -87,14 +87,15 @@
       <div class="field">
         <label for="grading" class="label">Grading %</label>
         <div class="control">
-            <input type="number" name="grading" class="input" min="0" max="100" placeholder="Weighted percentage of the coursework" value="{{ values['grading'] }}"required/>
+            <input type="number" name="grading" id="grading" class="input" min="0" max="100" placeholder="Weighted percentage of the coursework" value="{{ values['grading'] }}"required/>
         </div>
       </div>
 
       <div class="field">
         <label for="workType" class="label">Coursework Type</label>
         <div class="control">
-          <select class="form-control" id="coursework" name="workType" style="width: 100%" required>
+          <select class="form-control" id="workType" name="workType" style="width: 100%" required>
+            <option value="">&nbsp;</option>
             {% for workType, workTitle in courseworkTypes %}
             <option value="{{ workType }}">{{ workTitle }} ({{ workType }})</option>
             {% endfor %}
@@ -103,9 +104,9 @@
       </div>
 
       <div class="field">
-        <label for="Description" class="label">Description</label>
+        <label for="description" class="label">Description</label>
         <div class="control">
-            <textarea class="textarea" name="description" minlength="0" maxlength="255" placeholder="Optional short description of the work (max. 255 characters)">{{ values['description'] }}</textarea>
+            <textarea class="textarea" name="description" id="description" minlength="0" maxlength="255" placeholder="Optional short description of the work (max. 255 characters)">{{ values['description'] }}</textarea>
         </div>
       </div>
 
@@ -117,7 +118,7 @@
     </form>
 
     <script>
-    $("#coursework").select2();
+    $("#workType").select2();
     $("#instructor").select2({
       placeholder: "Full name of instructor(s)"
     });
