@@ -1,9 +1,9 @@
 {% extends "layout.html" %}
-{% block title %}Add Course{% endblock %}
+{% block title %}Add/Edit Course{% endblock %}
 {% block top %}
 <div class="hero-body">
   <div class="container">
-    <h1 class="title has-text-centered">Add course</h1>
+    <h1 class="title has-text-centered">Add/Edit course</h1>
     
     {% for category, message in get_flashed_messages(with_categories=True) %}
     <div class="notification is-{{category}}" style="width: 80%; margin: 0 auto;">
