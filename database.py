@@ -85,6 +85,18 @@ def get_courseworks(crn, semester):
     courseworks = cursor.fetchall()
     return courseworks
 
+def get_coursework(workID):
+    statement = """SELECT "Coursework"."workID", "CourseworkType"."workTitle", "Coursework"."startdate", "Coursework"."starttime", "Coursework"."enddate", "Coursework"."endtime", "Coursework"."grading", "Coursework"."workDescription", "Coursework"."workType", "Coursework"."crn", "Coursework"."semester"
+                    FROM "Coursework"
+                    LEFT JOIN "CourseworkType" ON "CourseworkType"."workType" = "Coursework"."workType"
+                    WHERE
+                    "Coursework"."workID" = %(workID)s
+                    ;
+                """
+    cursor.execute(statement, {'workID': workID})
+    courseworks = cursor.fetchone()
+    return courseworks
+
 def get_follow(userID, crn, semester):
     statement = """SELECT "Follows"."userID", "Follows"."crn", "Follows"."semester"
                     FROM "Follows"
@@ -180,21 +192,7 @@ def delete_course(courseCode):
     except dbapi2.DatabaseError:
         connection.rollback()
         return False
-'''
-def get_courseworks(crn, semester):
-    statement = """SELECT "date", "time", "grading" "CourseworkType"."workTitle" FROM "Coursework"
-                    WHERE
-                    "Coursework"."crn" = %(crn)s
-                    AND
-                    "Coursework"."semester" = %(semester)s
-                    LEFT JOIN "CourseworkType"
-                    WHERE
-                    "CourseworkType"."workType" = "Coursework"."workType"
-                    ;"""
-    cursor.execute(statement, {'crn': crn, 'semester': semester})
-    courseworks = cursor.fetchall()
-    return courseworks
-'''
+
 def get_courseworkTypes():
     statement = """SELECT "workType", "workTitle" FROM "CourseworkType";"""
     cursor.execute(statement)
@@ -278,11 +276,11 @@ def remove_instructs(crn, semester, instructorID):
         connection.rollback()
         return False
 
-def add_courseworktype(workTitle):
-    statement = """INSERT INTO "CourseworkType" ("workTitle")
-                    VALUES(%(workTitle)s);"""
+def add_courseworktype(workTitle, deadlineType):
+    statement = """INSERT INTO "CourseworkType" ("workTitle", "deadlineType")
+                    VALUES(%(workTitle)s, %(deadlineType)s);"""
     try:
-        cursor.execute(statement, {'workTitle': workTitle})
+        cursor.execute(statement, {'workTitle': workTitle, 'deadlineType': deadlineType})
         connection.commit()
         return True
     except dbapi2.DatabaseError:
@@ -290,10 +288,41 @@ def add_courseworktype(workTitle):
         return False
 
 def add_coursework(crn, semester, startdate, starttime, enddate, endtime, grading, description, workType):
-    statement = """INSERT INTO "Coursework" ("crn", "semester", "startdate", "starttime", "enddate", "endtime", "grading", "workType")
-                    VALUES(%(crn)s, %(semester)s, %(date)s, %(time)s, %(grading)s, %(workType)s);"""
+    statement = """INSERT INTO "Coursework" ("crn", "semester", "startdate", "starttime", "enddate", "endtime", "grading", "workDescription", "workType")
+                    VALUES(%(crn)s, %(semester)s, %(startdate)s, %(starttime)s, %(enddate)s, %(endtime)s, %(grading)s, %(description)s, %(workType)s);"""
     try:
         cursor.execute(statement, {'crn': crn, 'semester': semester, 'startdate': startdate, 'starttime': starttime, 'enddate': enddate, 'endtime': endtime, 'grading': grading, 'description': description, 'workType': workType})
+        connection.commit()
+        return True
+    except dbapi2.DatabaseError:
+        connection.rollback()
+        return False
+
+def update_coursework(workID, startdate, starttime, enddate, endtime, grading, description, workType):
+    statement = """UPDATE "Coursework"
+                    SET "startdate" = %(startdate)s,
+                    "starttime" = %(starttime)s,
+                    "enddate" = %(enddate)s,
+                    "endtime" = %(endtime)s,
+                    "grading" = %(grading)s,
+                    "workDescription" = %(description)s,
+                    "workType" = %(workType)s
+                    WHERE "workID" = %(workID)s
+                    ;"""
+    try:
+        cursor.execute(statement, {'workID': workID, 'startdate': startdate, 'starttime': starttime, 'enddate': enddate, 'endtime': endtime, 'grading': grading, 'description': description, 'workType': workType})
+        connection.commit()
+        return True
+    except dbapi2.DatabaseError:
+        connection.rollback()
+        return False
+
+def delete_coursework(id):
+    statement = """DELETE FROM "Coursework"
+                    WHERE "workID" = %(id)s;
+                    """
+    try:
+        cursor.execute(statement, {'id': id})
         connection.commit()
         return True
     except dbapi2.DatabaseError:

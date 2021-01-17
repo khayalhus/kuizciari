@@ -1,0 +1,69 @@
+{% extends "layout.html" %}
+{% block title %}Coursework {{ values['workID'] }}{% endblock %}
+{% block top %}
+<div class="hero-body">
+  <div class="container">
+    <div class="container has-text-centered">
+      <div>
+          <h1 id="override" class="title is-1 inline" style="display: inline;">{{ values['workTitle'] }} ({{ values['grading']}}%)</h1>
+      </div>
+      <h2 class="subtitle is-3">{{ aclass[3] }} ({{ aclass[2] }})</h1>
+    </div>
+    {% for category, message in get_flashed_messages(with_categories=True) %}
+    <div class="notification is-{{category}}" style="width: 80%; margin: 0 auto;">
+      <button class="delete"></button>
+      {{ message }}
+    </div>
+    {% endfor %}
+    <form method="post" name="coursework" style="width: 80%; margin: 0 auto;" class="box has-background-warning has-text-centered">
+      <div class="columns mb-1">
+        <div class="content column mb-0">
+          <label for="CRN" class="label">CRN: </label>
+          <span>{{ values['crn'] }}</span>
+        </div>
+        
+        <div class="content column mb-0">
+          <label for="Semester" class="label">Semester: </label>
+          <span>{{ values['semester'] }}</span>
+        </div>
+      </div>
+
+      <div class="columns mb-1">
+        <div class="content column mb-0">
+          <label for="Start Date" class="label">Start Date: </label>
+          <span>{{ values['startdate'] }}</span>
+        </div>
+        
+        <div class="content column mb-0">
+          <label for="Start Time" class="label">Start Time: </label>
+          <span>{{ values['starttime'] }}</span>
+        </div>
+      </div>
+
+      <div class="columns mb-1">
+        <div class="content column mb-0">
+          <label for="End Date" class="label">End Date: </label>
+          <span>{{ values['enddate'] }}</span>
+        </div>
+        
+        <div class="content column mb-0">
+          <label for="End Time" class="label">End Time: </label>
+          <span>{{ values['endtime'] }}</span>
+        </div>
+      </div>
+
+      <div class="content">
+        <label for="Description" class="label">Description: </label>
+        <p>{{ values['description'] }}</p>
+      </div>
+
+      <div class="is-grouped-centered has-text-centered">
+        <a class="button is-info" href="{{ url_for('coursework_edit_page', workID=values['workID']) }}">Edit</a>
+        <button class="button is-danger">Delete</button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+{% endblock %}

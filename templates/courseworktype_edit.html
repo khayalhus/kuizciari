@@ -1,5 +1,9 @@
 {% extends "layout.html" %}
 {% block title %}Add Coursework Type{% endblock %}
+{% block link %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+{% endblock %}
 {% block top %}
 <div class="hero-body">
   <div class="container">
@@ -15,9 +19,19 @@
     <form method="post" name="add_courseworktype" style="width: 80%; margin: 0 auto;" class="box has-background-warning">
       
       <div class="field">
-        <label for="courseworkTitle" class="label">Coursework Title</label>
+        <label for="courseworkTitle" class="label">Coursework Title*</label>
         <div class="control">
           <input type="text" name="workTitle" class="input" maxlength="255" placeholder="Generic title of the coursework (ex. Final, Midterm)" required/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="Deadline Type" class="label">Deadline Type*</label>
+        <div class="control">
+          <select class="form-control" id="deadlineType" name="deadlineType" style="width: 100%" required>
+            <option value="start">Show Start Time</option>
+            <option value="end">Show End Time</option>
+          </select>
         </div>
       </div>
 
@@ -30,4 +44,7 @@
     </form>
   </div>
 </div>
+<script>
+  $("#deadlineType").select2();
+</script>
 {% endblock %}

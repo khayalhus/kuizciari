@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS "User" (
 CREATE TABLE IF NOT EXISTS "CourseworkType" (
   "workType" SERIAL,
   "workTitle" VARCHAR(255) NOT NULL,
-  "deadline" VARCHAR(255) NOT NULL,
+  "deadlineType" VARCHAR(255) NOT NULL,
   PRIMARY KEY ("workType")
 );""",
 """

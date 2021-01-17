@@ -42,20 +42,20 @@
               </tr>
             </thead>
             <tbody>
-              {% for id, startdate, starttime, enddate, endtime, grading, title, description in courseworks %}
+              {% for coursework in courseworks %}
                 <tr>
                   <td>
                     <label class="checkbox">
-                      <input type="checkbox" name="class_keys" value="{{ id }}"/>
+                      <input type="checkbox" name="class_keys" value="{{ coursework['id'] }}"/>
                     </label>
                   </td>
-                  <td>{{ id }}</td>
-                  <td>{{ startdate }}</td>
-                  <td>{{ starttime }}</td>
-                  <td>{{ enddate }}</td>
-                  <td>{{ endtime }}</td>
-                  <td>{{ grading }}</td>
-                  <td>{{ title }}</td>
+                  <td><a href="{{ url_for('coursework_page', workID=coursework['id']) }}">{{ coursework['id'] }}</a></td>
+                  <td>{{ coursework['startdate'] }}</td>
+                  <td>{{ coursework['starttime'] }}</td>
+                  <td>{{ coursework['enddate'] }}</td>
+                  <td>{{ coursework['endtime'] }}</td>
+                  <td>{{ coursework['grading'] }}</td>
+                  <td>{{ coursework['title'] }}</td>
                 </tr>
               {% endfor %}
             </tbody>

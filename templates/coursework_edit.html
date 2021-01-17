@@ -17,57 +17,77 @@
     {% endfor %}
     
     <form action="" method="post" name="add_class" style="width: 80%; margin: 0 auto;" class="box has-background-warning">
-      
-      <div class="field">
-        <label for="crn" class="label">CRN</label>
-        <div class="control">
-            <input type="number" name="crn" class="input" min="10000" max="99999" placeholder="Class Reference Number (5 digits)" value="{{ aclass[0] }}" disabled/>
+      <div class="columns mb-1">
+        <div class="field column mb-0">
+          <label for="crn" class="label">CRN</label>
+          <div class="control">
+              <input type="number" name="crn" class="input" min="10000" max="99999" placeholder="Class Reference Number (5 digits)" value="{{ aclass[0] }}" disabled/>
+          </div>
+        </div>
+
+        <div class="field column mb-0">
+          <label for="semester" class="label">Semester</label>
+          <div class="control">
+              <input type="number" name="semester" class="input" min="202110" placeholder="Semester number (6 digits)" value="{{ aclass[1] }}" disabled/>
+          </div>
         </div>
       </div>
 
-      <div class="field">
-        <label for="semester" class="label">Semester</label>
-        <div class="control">
-            <input type="number" name="semester" class="input" min="202110" placeholder="Semester number (6 digits)" value="{{ aclass[1] }}" disabled/>
+      <div class="columns mb-1">
+        <div class="field column mb-0">
+          <label for="courseCode" class="label">Course Code</label>
+          <div class="control">
+              <input type="text" name="courseCode" class="input" min="202110" placeholder="Course Code (ex. BLG317E)" value="{{ aclass[2] }}" disabled/>
+          </div>
+        </div>
+
+        <div class="field column mb-0">
+          <label for="instructorName" class="label">Instructor(s)</label>
+          <div class="control">
+            <select class="form-control" multiple="multiple" id="instructor" name="instructors[]" style="width: 100%" disabled>
+              {% for instructorID, instructorName in instructors %}
+              <option value="{{ instructorID }}" selected>{{ instructorName }} ({{ instructorID }}) </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="columns mb-1">
+        <div class="field column mb-0">
+          <label for="date" class="label">Start Date</label>
+          <div class="control">
+              <input type="date" name="startdate" class="input" placeholder="Assignment deadline day or exam start day" value="{{ values['startdate'] }}" required/>
+          </div>
+        </div>
+
+        <div class="field column mb-0">
+          <label for="time" class="label">Start Time</label>
+          <div class="control">
+              <input type="time" name="starttime" class="input" placeholder="Assignment deadline hour or exam start time" value="{{ values['starttime'] }}" required/>
+          </div>
         </div>
       </div>
 
-      <div class="field">
-        <label for="courseCode" class="label">Course Code</label>
-        <div class="control">
-            <input type="text" name="courseCode" class="input" min="202110" placeholder="Course Code (ex. BLG317E)" value="{{ aclass[2] }}" disabled/>
+      <div class="columns mb-1">
+        <div class="field column mb-0">
+          <label for="date" class="label">End Date</label>
+          <div class="control">
+              <input type="date" name="enddate" class="input" placeholder="Assignment deadline day or exam start day" value="{{ values['enddate'] }}" required/>
+          </div>
         </div>
-      </div>
 
-      <div class="field">
-        <label for="instructorName" class="label">Instructor(s)</label>
-        <div class="control">
-          <select class="form-control" multiple="multiple" id="instructor" name="instructors[]" style="width: 100%" placeholder="test" disabled>
-            {% for instructorID, instructorName in instructors %}
-            <option value="{{ instructorID }}" selected>{{ instructorName }} ({{ instructorID }}) </option>
-            {% endfor %}
-          </select>
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="date" class="label">Date</label>
-        <div class="control">
-            <input type="date" name="date" class="input" placeholder="Assignment deadline day or exam start day" required/>
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="time" class="label">Time</label>
-        <div class="control">
-            <input type="time" name="time" class="input" placeholder="Assignment deadline hour or exam start time" required/>
+        <div class="field column mb-0">
+          <label for="time" class="label">End Time</label>
+          <div class="control">
+              <input type="time" name="endtime" class="input" placeholder="Assignment deadline hour or exam start time" value="{{ values['endtime'] }}" required/>
+          </div>
         </div>
       </div>
 
       <div class="field">
         <label for="grading" class="label">Grading %</label>
         <div class="control">
-            <input type="number" name="grading" class="input" min="0" max="100" placeholder="Weighted percentage of the coursework" required/>
+            <input type="number" name="grading" class="input" min="0" max="100" placeholder="Weighted percentage of the coursework" value="{{ values['grading'] }}"required/>
         </div>
       </div>
 
@@ -79,6 +99,13 @@
             <option value="{{ workType }}">{{ workTitle }} ({{ workType }})</option>
             {% endfor %}
           </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="Description" class="label">Description</label>
+        <div class="control">
+            <textarea class="textarea" name="description" minlength="0" maxlength="255" placeholder="Optional short description of the work (max. 255 characters)">{{ values['description'] }}</textarea>
         </div>
       </div>
 

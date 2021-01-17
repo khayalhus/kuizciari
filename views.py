@@ -35,12 +35,16 @@ def class_page(crn, semester):
         aclass = database.get_class(crn, semester)
         raw_courseworks = database.get_courseworks(crn, semester)
         mapped_courseworks = []
-        if raw_courseworks:
-            print('WHAT', file=sys.stderr)
-            mapped_courseworks = {'id': raw_courseworks[0], 'title': raw_courseworks[1], 'startdate': raw_courseworks[2], 'starttime': raw_courseworks[3], 'enddate': raw_courseworks[4], 'endtime': raw_courseworks[5], 'grading': raw_courseworks[6], 'description': raw_courseworks[7]}
-        
-        return render_template("class.html", year = year_dec, aclass = aclass, courseworks = mapped_courseworks, follows = follows)
+        for raw_coursework in raw_courseworks:
+            mapped_courseworks.append({'id': raw_coursework[0], 'title': raw_coursework[1], 'startdate': raw_coursework[2], 'starttime': raw_coursework[3], 'enddate': raw_coursework[4], 'endtime': raw_coursework[5], 'grading': raw_coursework[6], 'description': raw_coursework[7]})
+        return render_template("class.html", year = year_dec, aclass = aclass, courseworks = mapped_courseworks, follows = follows, zip=zip)
     elif request.method == "POST":
+        ids = request.form.getlist("class_keys")
+        for workID in ids:
+            if database.delete_coursework(workID) is False:
+                flash("Something went wrong when deleting work with ID " + str(workID) + ".", "danger")
+            else:
+                flash("Successfully deleted work with ID " + str(workID) + ".", "success")
         return redirect(url_for("class_page", crn = crn, semester = semester))
 
 def add_follow_redirector(crn, semester, follows):
@@ -75,13 +79,13 @@ def class_addition_page():
         form_vfGrade = request.form["vfGrade"]
         form_quota = request.form["quota"]
         form_enrolled = request.form["enrolled"]
-        if form_passGrade is "":
+        if form_passGrade == "":
             form_passGrade = None
-        if form_vfGrade is "":
+        if form_vfGrade == "":
             form_vfGrade = None
-        if form_quota is "":
+        if form_quota == "":
             form_quota = None
-        if form_enrolled is "":
+        if form_enrolled == "":
             form_enrolled = None
         if database.add_class(form_crn, form_semester, form_courseCode, form_passGrade, form_vfGrade, form_quota, form_enrolled) is True:
             for form_instructorID in form_instructorIDs:
@@ -155,27 +159,70 @@ def coursework_addition_page(crn, semester):
         courseworkTypes = database.get_courseworkTypes()
         aclass = database.get_class(crn, semester)
         instructors = database.get_class_instructors(crn, semester)
-        return render_template("coursework_edit.html", year = year_dec, courseworkTypes = courseworkTypes, aclass = aclass, instructors = instructors)
+        return render_template("coursework_edit.html", year = year_dec, courseworkTypes = courseworkTypes, aclass = aclass, instructors = instructors, values=values)
     elif request.method == "POST":
-        #form_crn = request.form["crn"]
-        #form_semester = request.form["semester"]
-        form_date = request.form["date"]
-        form_time = request.form["time"]
+        form_startdate = request.form["startdate"]
+        form_starttime = request.form["starttime"]
+        form_enddate = request.form["enddate"]
+        form_endtime = request.form["endtime"]
         form_grading = request.form["grading"]
         form_workType = request.form["workType"]
-        if database.add_coursework(crn, semester, form_date, form_time, form_grading, form_workType) is True:
+        form_description = request.form["description"]
+        if database.add_coursework(crn, semester, form_startdate, form_starttime, form_enddate, form_endtime, form_grading, form_description, form_workType) is True:
             flash("Coursework has been added to class with CRN " + str(crn) + ".", "success")
             return redirect(url_for("class_page", crn = crn, semester = semester))
         else:
             flash("Could not add coursework to class with CRN" + str(crn) + ".", "danger")
             return redirect(url_for("coursework_addition_page", crn = crn, semester = semester))
 
+def coursework_page(workID):
+    if request.method == "GET":
+        coursework = database.get_coursework(workID)
+        mapped_values = {'crn': coursework[9], 'semester': coursework[10], 'startdate': coursework[2], 'starttime': coursework[3], 'enddate': coursework[4], 'endtime': coursework[5], 'grading': coursework[6], 'description': coursework[7], 'workType': coursework[8], 'workID': coursework[0], 'workTitle': coursework[1]}
+        aclass = database.get_class(mapped_values['crn'], mapped_values['semester'])
+        return render_template("coursework.html", year = year_dec, aclass = aclass, values=mapped_values)
+    elif request.method == "POST":
+        coursework = database.get_coursework(workID)
+        mapped_values = {'crn': coursework[9], 'semester': coursework[10], 'startdate': coursework[2], 'starttime': coursework[3], 'enddate': coursework[4], 'endtime': coursework[5], 'grading': coursework[6], 'description': coursework[7], 'workType': coursework[8]}
+        if database.delete_coursework(workID) is True:
+            flash("Coursework with ID " + str(workID) + " has been deleted.", "success")
+            return redirect(url_for("class_page", crn = mapped_values['crn'], semester = mapped_values['semester']))
+        else:
+            flash("Coursework with ID " + str(workID) + " could not be deleted.", "danger")
+            return redirect(url_for("coursework_page", workID = workID))
+
+
+def coursework_edit_page(workID):
+    if request.method == "GET":
+        coursework = database.get_coursework(workID)
+        mapped_values = {'crn': coursework[9], 'semester': coursework[10], 'startdate': coursework[2], 'starttime': coursework[3], 'enddate': coursework[4], 'endtime': coursework[5], 'grading': coursework[6], 'description': coursework[7], 'workType': coursework[8]}
+        courseworkTypes = database.get_courseworkTypes()
+        aclass = database.get_class(mapped_values['crn'], mapped_values['semester'])
+        instructors = database.get_class_instructors(mapped_values['crn'], mapped_values['semester'])
+        return render_template("coursework_edit.html", year = year_dec, courseworkTypes = courseworkTypes, aclass = aclass, instructors = instructors, values=mapped_values)
+    elif request.method == "POST":
+        form_startdate = request.form["startdate"]
+        form_starttime = request.form["starttime"]
+        form_enddate = request.form["enddate"]
+        form_endtime = request.form["endtime"]
+        form_grading = request.form["grading"]
+        form_workType = request.form["workType"]
+        form_description = request.form["description"]
+        if database.update_coursework(workID, form_startdate, form_starttime, form_enddate, form_endtime, form_grading, form_description, form_workType) is True:
+            flash("Coursework with ID" + str(workID) + " has been updated.", "success")
+            return redirect(url_for("coursework_page", workID=workID))
+        else:
+            flash("Coursework with ID" + str(workID) + " could not be updated.", "danger")
+            return redirect(url_for("coursework_page", workID = workID))
+
+
 def courseworktype_addition_page():
     if request.method == "GET":
         return render_template("courseworktype_edit.html", year = year_dec)
     elif request.method == "POST":
         form_workTitle = request.form["workTitle"]
-        if database.add_courseworktype(form_workTitle) is False:
+        form_deadlineType = request.form["deadlineType"]
+        if database.add_courseworktype(form_workTitle, form_deadlineType) is False:
             flash("An unknown error occured when adding new coursework type.", "danger")
             return redirect(url_for("courseworktype_addition_page"))
         flash("Coursework type " + form_workTitle + " has been successfully added to the database.", "success")
