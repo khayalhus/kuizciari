@@ -16,7 +16,7 @@
     </div>
     {% endfor %}
     
-    <form action="" method="post" name="add_class" style="width: 80%; margin: 0 auto;" class="box has-background-warning">
+    <form method="post" name="add_class" style="width: 80%; margin: 0 auto;" class="box has-background-warning">
       <div class="columns mb-1">
         <div class="field column mb-0">
           <label for="crn" class="label">CRN</label>
@@ -119,6 +119,8 @@
 
     <script>
     $("#workType").select2();
+    $('#workType').val('{{ values["workType"] }}');
+    $('#workType').trigger('change'); 
     $("#instructor").select2({
       placeholder: "Full name of instructor(s)"
     });
