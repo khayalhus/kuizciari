@@ -56,7 +56,7 @@
       <div class="field">
         <label for="instructor" class="label">Instructor(s)</label>
         <div class="control">
-          <select class="form-control" multiple="multiple" id="instructor" name="instructors[]" style="width: 100%" placeholder="test" required>
+          <select class="form-control" multiple="multiple" id="instructor" name="instructors[]" style="width: 100%" required>
             {% for instructorID, instructorName in instructors %}
             <option value="{{ instructorID }}">{{ instructorName }} ({{ instructorID }}) </option>
             {% endfor %}

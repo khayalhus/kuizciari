@@ -21,14 +21,14 @@
         <div class="field column mb-0">
           <label for="crn" class="label">CRN</label>
           <div class="control">
-              <input type="number" name="crn" class="input" min="10000" max="99999" placeholder="Class Reference Number (5 digits)" value="{{ aclass[0] }}" disabled/>
+              <input type="number" name="crn" id="crn" class="input" min="10000" max="99999" placeholder="Class Reference Number (5 digits)" value="{{ aclass[0] }}" disabled/>
           </div>
         </div>
 
         <div class="field column mb-0">
           <label for="semester" class="label">Semester</label>
           <div class="control">
-              <input type="number" name="semester" class="input" min="202110" placeholder="Semester number (6 digits)" value="{{ aclass[1] }}" disabled/>
+              <input type="number" name="semester" id="semester" class="input" min="202110" placeholder="Semester number (6 digits)" value="{{ aclass[1] }}" disabled/>
           </div>
         </div>
       </div>
@@ -37,12 +37,12 @@
         <div class="field column mb-0">
           <label for="courseCode" class="label">Course Code</label>
           <div class="control">
-              <input type="text" name="courseCode" class="input" min="202110" placeholder="Course Code (ex. BLG317E)" value="{{ aclass[2] }}" disabled/>
+              <input type="text" name="courseCode" id="courseCode" class="input" placeholder="Course Code (ex. BLG317E)" value="{{ aclass[2] }}" disabled/>
           </div>
         </div>
 
         <div class="field column mb-0">
-          <label for="instructorName" class="label">Instructor(s)</label>
+          <label for="instructor" class="label">Instructor(s)</label>
           <div class="control">
             <select class="form-control" multiple="multiple" id="instructor" name="instructors[]" style="width: 100%" disabled>
               {% for instructorID, instructorName in instructors %}
@@ -56,14 +56,14 @@
         <div class="field column mb-0">
           <label for="startdate" class="label">Start Date</label>
           <div class="control">
-              <input type="date" name="startdate" id="startdate" class="input" placeholder="Assignment deadline day or exam start day" value="{{ values['startdate'] }}" required/>
+              <input type="date" name="startdate" id="startdate" class="input" value="{{ values['startdate'] }}" required/>
           </div>
         </div>
 
         <div class="field column mb-0">
           <label for="starttime" class="label">Start Time</label>
           <div class="control">
-              <input type="time" name="starttime" id="starttime" class="input" placeholder="Assignment deadline hour or exam start time" value="{{ values['starttime'] }}" required/>
+              <input type="time" name="starttime" id="starttime" class="input" value="{{ values['starttime'] }}" required/>
           </div>
         </div>
       </div>
@@ -72,14 +72,14 @@
         <div class="field column mb-0">
           <label for="enddate" class="label">End Date</label>
           <div class="control">
-              <input type="date" name="enddate" id="enddate" class="input" placeholder="Assignment deadline day or exam start day" value="{{ values['enddate'] }}" required/>
+              <input type="date" name="enddate" id="enddate" class="input" value="{{ values['enddate'] }}" required/>
           </div>
         </div>
 
         <div class="field column mb-0">
           <label for="endtime" class="label">End Time</label>
           <div class="control">
-              <input type="time" name="endtime" id="endtime" class="input" placeholder="Assignment deadline hour or exam start time" value="{{ values['endtime'] }}" required/>
+              <input type="time" name="endtime" id="endtime" class="input" value="{{ values['endtime'] }}" required/>
           </div>
         </div>
       </div>
@@ -87,7 +87,7 @@
       <div class="field">
         <label for="grading" class="label">Grading %</label>
         <div class="control">
-            <input type="number" name="grading" id="grading" class="input" min="0" max="100" placeholder="Weighted percentage of the coursework" value="{{ values['grading'] }}"required/>
+            <input type="number" name="grading" id="grading" class="input" min="0" max="100" placeholder="Weighted percentage of the coursework" value="{{ values['grading'] }}" required/>
         </div>
       </div>
 

@@ -71,7 +71,7 @@
             {% endif %}
             Compulsory
           </label>
-          <label for="Elective" class="checkbox">
+          <label for="elective" class="checkbox">
             {% if values['elective'] == "E" %}
             <input type="checkbox" name="elective" id="elective" value="E" checked>
             {% else %}
@@ -112,14 +112,14 @@
         </div>
 
         <div class="field column">
-          <label for="Tutorial" class="label">Tutorial*</label>
+          <label for="tutorial" class="label">Tutorial*</label>
           <div class="control">
               <input type="number" name="tutorial" id="tutorial" class="input" min="0" max="9" step="1" placeholder="hours per week (ex. 2)"  value="{{ values['tutorial'] }}" required/>
           </div>
         </div>
 
         <div class="field column">
-          <label for="Laboratory" class="label">Laboratory*</label>
+          <label for="laboratory" class="label">Laboratory*</label>
           <div class="control">
               <input type="number" name="laboratory" id="laboratory" class="input" min="0" max="9" step="1" placeholder="hours per week (ex. 2)" value="{{ values['laboratory'] }}" required/>
           </div>

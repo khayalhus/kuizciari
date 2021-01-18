@@ -3,13 +3,13 @@
 {% block top %}
 <div class="hero-body">
     <div class="container" style="width: 100%;">
-      <div class="container has-text-centered">
+      <div class="block container has-text-centered">
           <div>
               <h1 id="override" class="title is-1 inline" style="display: inline;">{{ aclass[3] }} ({{ aclass[2] }})</h1>
           </div>
           <h2 class="subtitle is-3">{{ aclass[0] }} ({{ aclass[1] }})</h2>
       </div>
-      <div class="container has-text-centered">
+      <div class="block has-text-centered">
         <a class="button is-normal is-info" href="{{ url_for('coursework_addition_page', crn=aclass[0], semester=aclass[1]) }}">Add Coursework</a>
         {% if follows == None %}
           <a class="button is-normal is-info" href="{{ url_for('login_page', crn=aclass[0], semester=aclass[1]) }}">Follow</a>
@@ -26,7 +26,7 @@
           {{ message }}
         </div>
       {% endfor %}
-      <form action="" method="post" name="class_list">
+      <form method="post" name="class_list">
         <div class="table-container">
           <table class="table is-bordered is-striped is-fullwidth has-text-centered">
             <thead class="has-background-warning">
