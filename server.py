@@ -23,7 +23,7 @@ app.add_url_rule("/login", view_func=views.login_page, methods=["GET", "POST"])
 app.add_url_rule("/signup", view_func=views.signup_page, methods=["GET", "POST"])
 app.add_url_rule("/logout", view_func=views.logout_page)
 app.add_url_rule("/profile", view_func=views.profile_page)
-
+app.add_url_rule("/class/<int:semester>/<int:crn>/syllabus", view_func=views.syllabus_page)
 
 if __name__ == "__main__":
     initdb.initialize()

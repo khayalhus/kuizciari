@@ -58,7 +58,7 @@ def get_class(crn, semester):
     return aclass
 
 def get_whole_class(crn, semester):
-    statement = """SELECT "Class"."crn", "Class"."semester", "Class"."courseCode", "passGrade", "vfGrade", "quota", "enrolled"
+    statement = """SELECT "Class"."crn", "Class"."semester", "Class"."courseCode", "passGrade", "vfGrade", "quota", "enrolled", "syllabus"
                     FROM "Class"
                     WHERE
                     "Class"."crn" = %(crn)s
@@ -199,18 +199,18 @@ def get_courseworkTypes():
     courseworkTypes = cursor.fetchall()
     return courseworkTypes
 
-def add_class(crn, semester, courseCode, passGrade, vfGrade, quota, enrolled):
-    statement = """INSERT INTO "Class" ("crn", "semester", "courseCode", "passGrade", "vfGrade", "quota", "enrolled")
-                    VALUES(%(crn)s, %(semester)s, %(courseCode)s, %(passGrade)s, %(vfGrade)s, %(quota)s, %(enrolled)s);"""
+def add_class(crn, semester, courseCode, passGrade, vfGrade, quota, enrolled, syllabus):
+    statement = """INSERT INTO "Class" ("crn", "semester", "courseCode", "passGrade", "vfGrade", "quota", "enrolled", "syllabus")
+                    VALUES(%(crn)s, %(semester)s, %(courseCode)s, %(passGrade)s, %(vfGrade)s, %(quota)s, %(enrolled)s, %(syllabus)s);"""
     try:
-        cursor.execute(statement, {'crn': crn, 'semester': semester, 'courseCode': courseCode, 'passGrade': passGrade, 'vfGrade': vfGrade, 'quota': quota, 'enrolled': enrolled})
+        cursor.execute(statement, {'crn': crn, 'semester': semester, 'courseCode': courseCode, 'passGrade': passGrade, 'vfGrade': vfGrade, 'quota': quota, 'enrolled': enrolled, 'syllabus': syllabus})
         connection.commit()
         return True
     except dbapi2.DatabaseError:
         connection.rollback()
         return False
 
-def update_class(crn, semester, newcrn, newsemester, courseCode, passGrade, vfGrade, quota, enrolled):
+def update_class(crn, semester, newcrn, newsemester, courseCode, passGrade, vfGrade, quota, enrolled, syllabus):
     statement = """UPDATE "Class"
                     SET "crn" = %(newcrn)s,
                     "semester" = %(newsemester)s,
@@ -218,13 +218,14 @@ def update_class(crn, semester, newcrn, newsemester, courseCode, passGrade, vfGr
                     "passGrade" = %(passGrade)s,
                     "vfGrade" = %(vfGrade)s,
                     "quota" = %(quota)s,
-                    "enrolled" = %(enrolled)s
+                    "enrolled" = %(enrolled)s,
+                    "syllabus" = %(syllabus)s
                     WHERE "crn" = %(crn)s
                     AND
                     "semester" = %(semester)s
                     ;"""
     try:
-        cursor.execute(statement, {'crn': crn, 'newcrn': newcrn, 'semester': semester, 'newsemester': newsemester, 'courseCode': courseCode, 'passGrade': passGrade, 'vfGrade': vfGrade, 'quota': quota, 'enrolled': enrolled})
+        cursor.execute(statement, {'crn': crn, 'newcrn': newcrn, 'semester': semester, 'newsemester': newsemester, 'courseCode': courseCode, 'passGrade': passGrade, 'vfGrade': vfGrade, 'quota': quota, 'enrolled': enrolled, 'syllabus': syllabus})
         connection.commit()
         return True
     except dbapi2.DatabaseError:

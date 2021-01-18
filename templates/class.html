@@ -18,6 +18,7 @@
         {% elif follows == True %}
           <a class="button is-normal is-info is-active" href="{{ url_for('add_follow_redirector', crn=aclass[0], semester=aclass[1], follows = 'unfollow') }}">Unfollow</a>
         {% endif %}
+        <a class="button is-normal is-info" href="{{ url_for('syllabus_page', crn=aclass[0], semester=aclass[1]) }}" target="_blank">View Syllabus</a>
       </div>
 
       {% for category, message in get_flashed_messages(with_categories=True) %}

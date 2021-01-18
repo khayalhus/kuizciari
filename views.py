@@ -1,4 +1,4 @@
-from flask import current_app, render_template, request, redirect, url_for, abort, session, flash
+from flask import current_app, render_template, request, redirect, url_for, abort, session, flash, send_file
 from datetime import datetime
 from string import ascii_letters
 import json
@@ -6,6 +6,8 @@ import database
 import sys
 import os
 import hashlib
+
+import io
 
 
 today = datetime.today()
@@ -79,6 +81,7 @@ def class_addition_page():
         form_vfGrade = request.form["vfGrade"]
         form_quota = request.form["quota"]
         form_enrolled = request.form["enrolled"]
+        form_syllabus = request.files['syllabus']
         if form_passGrade == "":
             form_passGrade = None
         if form_vfGrade == "":
@@ -87,7 +90,13 @@ def class_addition_page():
             form_quota = None
         if form_enrolled == "":
             form_enrolled = None
-        if database.add_class(form_crn, form_semester, form_courseCode, form_passGrade, form_vfGrade, form_quota, form_enrolled) is True:
+        filename = form_syllabus.filename
+        file_ext = os.path.splitext(filename)[1]
+        if file_ext not in current_app.config['UPLOAD_EXTENSIONS']:
+            flash("Syllabus file type can only be pdf", "danger")
+            return redirect(url_for("class_addition_page"))
+        blob_data = form_syllabus.read()
+        if database.add_class(form_crn, form_semester, form_courseCode, form_passGrade, form_vfGrade, form_quota, form_enrolled, blob_data) is True:
             for form_instructorID in form_instructorIDs:
                 if database.add_instructs(form_crn, form_semester, form_instructorID) is False:
                     flash("Instructor " + str(form_instructorID) + " is already assigned to this class.", "danger")
@@ -119,7 +128,7 @@ def class_edit_page(crn, semester):
         form_vfGrade = request.form["vfGrade"]
         form_quota = request.form["quota"]
         form_enrolled = request.form["enrolled"]
-
+        form_syllabus = request.files['syllabus']
         if form_passGrade == "":
             form_passGrade = None
         if form_vfGrade == "":
@@ -132,8 +141,17 @@ def class_edit_page(crn, semester):
         instructorIDs = []
         for instructor_info in database.get_class_instructors(crn, semester):
             instructorIDs.append(instructor_info[0])
-
-        if database.update_class(crn, semester, form_crn, form_semester, form_courseCode, form_passGrade, form_vfGrade, form_quota, form_enrolled) is True:
+        filename = form_syllabus.filename
+        file_ext = os.path.splitext(filename)[1]
+        aclass = database.get_whole_class(crn, semester)
+        blob_data = aclass[7]
+        if(filename != ""):
+            if file_ext not in current_app.config['UPLOAD_EXTENSIONS']:
+                flash("Syllabus file type can only be pdf", "danger")
+                return redirect(url_for("class_edit_page", crn = crn, semester = semester))
+            else:
+                blob_data = form_syllabus.read()
+        if database.update_class(crn, semester, form_crn, form_semester, form_courseCode, form_passGrade, form_vfGrade, form_quota, form_enrolled, blob_data) is True:
             for form_instructorID in form_instructorIDs:
                 removed = False
                 for instructorID in instructorIDs:
@@ -151,6 +169,11 @@ def class_edit_page(crn, semester):
         else:
             flash("Class with CRN " + str(crn) +  " could not be updated.", "danger")
             return redirect(url_for("class_edit_page", crn = crn, semester=semester))
+
+def syllabus_page(crn, semester):
+    aclass = database.get_whole_class(crn, semester)
+    bytes_io = io.BytesIO(aclass[7])
+    return send_file(bytes_io, mimetype='application/pdf')
 
 def coursework_addition_page(crn, semester):
     if request.method == "GET":

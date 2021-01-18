@@ -1,3 +1,5 @@
 SECRET_KEY = "HerokuDoesNotLikeRandomKeys"
 DEBUG = True
 PORT = 8080
+MAX_CONTENT_LENGTH = 8 * 1024 * 1024
+UPLOAD_EXTENSIONS = ['.pdf']

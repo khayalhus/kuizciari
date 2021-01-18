@@ -16,7 +16,7 @@
     </div>
     {% endfor %}
     
-    <form method="post" name="add_class" style="width: 80%; margin: 0 auto;" class="box has-background-warning">
+    <form method="post" name="add_class" style="width: 80%; margin: 0 auto;" class="box has-background-warning" enctype = "multipart/form-data">
       
       <div class="field">
         <label for="crn" class="label">CRN</label>
@@ -96,12 +96,46 @@
         </div>
       </div>
 
+      <label for="syllabus" class="label">Syllabus</label>
+      <div class="file has-name field" id="file-field">
+        <label for="syllabus" class="file-label">
+          <input class="file-input" type="file" name="syllabus" id="syllabus">
+          <span class="file-cta">
+            <span class="file-icon">
+              <i class="fas fa-upload"></i>
+            </span>
+            <span class="file-label">
+              Choose a file…
+            </span>
+          </span>
+          {% if values['syllabus'] == "" or values['syllabus'] == None %}
+          <span class="file-name">
+            No file uploaded yet
+          </span>
+          {% else %}
+          <span class="file-name">
+            {{ values['syllabus'] }}
+          </span>
+          {% endif %}
+        </label>
+      </div>
+
       <div class="field">
         <div class="control">
           <button class="button is-primary has-background-white has-text-warning-dark">Save</button>
         </div>
       </div>
     </form>
+
+    <script>
+      const fileInput = document.querySelector('#file-field input[type=file]');
+      fileInput.onchange = () => {
+        if (fileInput.files.length > 0) {
+          const fileName = document.querySelector('#file-field .file-name');
+          fileName.textContent = fileInput.files[0].name;
+        }
+      }
+    </script>
 
     <script>
     $("#course").select2();
