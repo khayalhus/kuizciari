@@ -196,16 +196,6 @@ def class_edit_page(crn, semester):
                 return redirect(url_for("class_edit_page", crn = crn, semester = semester))
             else:
                 blob_data = form_syllabus.read()
-        print(crn)
-        print(semester)
-        print(form_crn)
-        print(form_semester)
-        print(form_courseCode)
-        print(form_passGrade)
-        print(form_vfGrade)
-        print(form_quota)
-        print(form_enrolled)
-        print(blob_data)
         if database.update_class(crn, semester, form_crn, form_semester, form_courseCode, form_passGrade, form_vfGrade, form_quota, form_enrolled, blob_data) is True:
             for form_instructorID in form_instructorIDs:
                 removed = False
@@ -249,6 +239,15 @@ def coursework_addition_page(crn, semester):
         form_grading = request.form["grading"]
         form_workType = request.form["workType"]
         form_description = request.form["description"]
+
+        if form_startdate > form_enddate:
+            flash("Start date can not be later than end date", "danger")
+            return redirect(url_for("coursework_addition_page", crn = crn, semester = semester))
+        elif form_startdate == form_enddate:
+            if form_starttime > form_endtime:
+                flash("Start time can not be later than end time", "danger")
+                return redirect(url_for("coursework_addition_page", crn = crn, semester = semester))
+
         if database.add_coursework(crn, semester, form_startdate, form_starttime, form_enddate, form_endtime, form_grading, form_description, form_workType) is True:
             flash("Coursework has been added to class with CRN " + str(crn) + ".", "success")
             return redirect(url_for("class_page", crn = crn, semester = semester))
@@ -295,6 +294,15 @@ def coursework_edit_page(workID):
         form_grading = request.form["grading"]
         form_workType = request.form["workType"]
         form_description = request.form["description"]
+
+        if form_startdate > form_enddate:
+            flash("Start date can not be later than end date", "danger")
+            return redirect(url_for("coursework_page", workID = workID))
+        elif form_startdate == form_enddate:
+            if form_starttime > form_endtime:
+                flash("Start time can not be later than end time", "danger")
+                return redirect(url_for("coursework_page", workID = workID))
+        
         if database.update_coursework(workID, form_startdate, form_starttime, form_enddate, form_endtime, form_grading, form_description, form_workType) is True:
             flash("Coursework with ID" + str(workID) + " has been updated.", "success")
             return redirect(url_for("coursework_page", workID=workID))
