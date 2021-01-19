@@ -110,7 +110,8 @@ def class_addition_page():
         return render_template("class_edit.html", year = year_dec, courses = courses, instructors = instructors, zip=zip, values = values)
     elif request.method == "POST":
         form_crn = request.form["crn"]
-        form_semester = request.form["semester"]
+        form_semester = request.form["year"] * 100
+        form_semester += request.form["season"]
         form_courseCode = request.form["courseCode"]
         form_instructorIDs = request.form.getlist("instructors[]")
         form_passGrade = request.form["passGrade"]
@@ -163,7 +164,10 @@ def class_edit_page(crn, semester):
         return render_template("class_edit.html", year = year_dec, courses = courses, instructors = instructors, zip=zip, values = mapped_values)
     elif request.method == "POST":
         form_crn = request.form["crn"]
-        form_semester = request.form["semester"]
+        form_semester = request.form["year"]
+        print(form_semester)
+        form_semester += request.form["season"]
+        print(form_semester)
         form_courseCode = request.form["courseCode"]
         form_instructorIDs = request.form.getlist("instructors[]")
         form_passGrade = request.form["passGrade"]

@@ -15,20 +15,38 @@
       {{ message }}
     </div>
     {% endfor %}
-    
+
     <form method="post" name="add_class" style="width: 80%; margin: 0 auto;" class="box has-background-warning" enctype = "multipart/form-data">
       
       <div class="field">
         <label for="crn" class="label">CRN</label>
         <div class="control">
-            <input type="number" name="crn" id="crn" class="input" min="10000" max="99999" placeholder="Class Reference Number (5 digits)" value="{{ values['crn'] }}" required/>
+          <input type="number" name="crn" id="crn" class="input" min="10000" max="99999" step="1" placeholder="Class Reference Number (5 digits)" value="{{ values['crn'] }}" required/>
         </div>
       </div>
 
-      <div class="field">
-        <label for="semester" class="label">Semester</label>
-        <div class="control">
-            <input type="number" name="semester" id="semester" class="input" min="202110" placeholder="Semester number (6 digits)" value="{{ values['semester'] }}" required/>
+      <div class="columns mb-1">
+        <div class="field column mb-0">
+          <label for="year" class="label">Year</label>
+          <div class="control">
+            {% if values['semester'] == "" %}
+            <input type="number" name="year" id="year" class="input" min="1773" max="{{ year|int + 1 }}" step="1" placeholder="For a 2018-2019 semester, enter latter value (ex. 2019)" value="" required/>
+            {% else %}
+            <input type="number" name="year" id="year" class="input" min="1773" max="{{ year|int + 1 }}" step="1" placeholder="For 2018-2019 Fall semester, enter 2019" value="{{ values['semester']|int // 100 }}" required/>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="field column mb-0">
+          <label for="season" class="label">Season</label>
+          <div class="control">
+            <select class="form-control" id="season" name="season" style="width: 100%" required>
+              <option value="">&nbsp;</option>
+              <option value="10">Fall</option>
+              <option value="20">Spring</option>
+              <option value="30">Summer</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -43,15 +61,6 @@
           </select>
         </div>
       </div>
-
-      <!--
-      <div class="field">
-        <label for="courseTitle" class="label">Course Title</label>
-        <div class="control">
-            <input type="text" class="input" name="courseTitle" minlength="1" maxlength="255" placeholder="Title of the course (max 255 characters) (ex. Database Systems)" readonly/>
-        </div>
-      </div>
-      -->
 
       <div class="field">
         <label for="instructor" class="label">Instructor(s)</label>
@@ -138,6 +147,10 @@
     </script>
 
     <script>
+    $("#season").select2();
+    $('#season').val('{{ values["semester"]|int % 100 }}');
+    $('#season').trigger('change'); 
+
     $("#course").select2();
     $('#course').val('{{ values["courseCode"] }}');
     $('#course').trigger('change'); 
