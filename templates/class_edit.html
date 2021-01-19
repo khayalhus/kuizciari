@@ -19,7 +19,7 @@
     <form method="post" name="add_class" style="width: 80%; margin: 0 auto;" class="box has-background-warning" enctype = "multipart/form-data">
       
       <div class="field">
-        <label for="crn" class="label">CRN</label>
+        <label for="crn" class="label">CRN*</label>
         <div class="control">
           <input type="number" name="crn" id="crn" class="input" min="10000" max="99999" step="1" placeholder="Class Reference Number (5 digits)" value="{{ values['crn'] }}" required/>
         </div>
@@ -27,7 +27,7 @@
 
       <div class="columns mb-1">
         <div class="field column mb-0">
-          <label for="year" class="label">Year</label>
+          <label for="year" class="label">Year*</label>
           <div class="control">
             {% if values['semester'] == "" %}
             <input type="number" name="year" id="year" class="input" min="1773" max="{{ year|int + 1 }}" step="1" placeholder="For a 2018-2019 semester, enter latter value (ex. 2019)" value="" required/>
@@ -38,7 +38,7 @@
         </div>
 
         <div class="field column mb-0">
-          <label for="season" class="label">Season</label>
+          <label for="season" class="label">Season*</label>
           <div class="control">
             <select class="form-control" id="season" name="season" style="width: 100%" required>
               <option value="">&nbsp;</option>
@@ -51,7 +51,7 @@
       </div>
 
       <div class="field">
-        <label for="course" class="label">Course Code</label>
+        <label for="course" class="label">Course Code*</label>
         <div class="control">
           <select class="form-control" id="course" name="courseCode" style="width: 100%" required>
             <option value="">&nbsp;</option>
@@ -63,7 +63,7 @@
       </div>
 
       <div class="field">
-        <label for="instructor" class="label">Instructor(s)</label>
+        <label for="instructor" class="label">Instructor(s)*</label>
         <div class="control">
           <select class="form-control" multiple="multiple" id="instructor" name="instructors[]" style="width: 100%" required>
             {% for instructorID, instructorName in instructors %}
@@ -105,7 +105,7 @@
         </div>
       </div>
 
-      <label for="syllabus" class="label">Syllabus</label>
+      <label for="syllabus" class="label">Syllabus (PDF)</label>
       <div class="file has-name field" id="file-field">
         <label for="syllabus" class="file-label">
           <input class="file-input" type="file" name="syllabus" id="syllabus">

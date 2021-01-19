@@ -54,14 +54,14 @@
       </div>
       <div class="columns mb-1">
         <div class="field column mb-0">
-          <label for="startdate" class="label">Start Date</label>
+          <label for="startdate" class="label">Start Date*</label>
           <div class="control">
               <input type="date" name="startdate" id="startdate" class="input" value="{{ values['startdate'] }}" required/>
           </div>
         </div>
 
         <div class="field column mb-0">
-          <label for="starttime" class="label">Start Time</label>
+          <label for="starttime" class="label">Start Time*</label>
           <div class="control">
               <input type="time" name="starttime" id="starttime" class="input" value="{{ values['starttime'] }}" required/>
           </div>
@@ -70,14 +70,14 @@
 
       <div class="columns mb-1">
         <div class="field column mb-0">
-          <label for="enddate" class="label">End Date</label>
+          <label for="enddate" class="label">End Date*</label>
           <div class="control">
               <input type="date" name="enddate" id="enddate" class="input" value="{{ values['enddate'] }}" required/>
           </div>
         </div>
 
         <div class="field column mb-0">
-          <label for="endtime" class="label">End Time</label>
+          <label for="endtime" class="label">End Time*</label>
           <div class="control">
               <input type="time" name="endtime" id="endtime" class="input" value="{{ values['endtime'] }}" required/>
           </div>
@@ -85,14 +85,14 @@
       </div>
 
       <div class="field">
-        <label for="grading" class="label">Grading %</label>
+        <label for="grading" class="label">Grading(%) *</label>
         <div class="control">
             <input type="number" name="grading" id="grading" class="input" min="0" max="100" placeholder="Weighted percentage of the coursework" value="{{ values['grading'] }}" required/>
         </div>
       </div>
 
       <div class="field">
-        <label for="workType" class="label">Coursework Type</label>
+        <label for="workType" class="label">Coursework Type*</label>
         <div class="control">
           <select class="form-control" id="workType" name="workType" style="width: 100%" required>
             <option value="">&nbsp;</option>
