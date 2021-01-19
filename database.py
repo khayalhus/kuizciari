@@ -58,8 +58,9 @@ def get_class(crn, semester):
     return aclass
 
 def get_whole_class(crn, semester):
-    statement = """SELECT "Class"."crn", "Class"."semester", "Class"."courseCode", "passGrade", "vfGrade", "quota", "enrolled", "syllabus"
+    statement = """SELECT "Class"."crn", "Class"."semester", "Class"."courseCode", "courseTitle" , "passGrade", "vfGrade", "quota", "enrolled", "syllabus"
                     FROM "Class"
+                    LEFT JOIN "Course" ON "Class"."courseCode" = "Course"."courseCode"
                     WHERE
                     "Class"."crn" = %(crn)s
                     AND
@@ -121,9 +122,13 @@ def delete_class(crn, semester):
                     AND "semester" = %(semester)s
                     ;
                 """
-    cursor.execute(statement, {'crn': crn, 'semester': semester})
-    connection.commit()
-    return
+    try:
+        cursor.execute(statement, {'crn': crn, 'semester': semester})
+        connection.commit()
+        return True
+    except dbapi2.DatabaseError:
+        connection.rollback()
+        return False
 
 def get_instructors():
     statement = """SELECT "instructorID", "instructorName" FROM "Instructor";"""

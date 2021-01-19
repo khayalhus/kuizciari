@@ -37,7 +37,7 @@ def class_page(crn, semester):
             follows = database.get_follow(userID, crn, semester)
         else:
             follows = None
-        aclass = database.get_class(crn, semester)
+        aclass = database.get_whole_class(crn, semester)
         raw_courseworks = database.get_courseworks(crn, semester)
         mapped_courseworks = []
         for raw_coursework in raw_courseworks:
@@ -53,6 +53,16 @@ def class_page(crn, semester):
                 flash("Something went wrong when deleting work with ID " + str(workID) + ".", "danger")
             else:
                 flash("Successfully deleted work with ID " + str(workID) + ".", "success")
+        return redirect(url_for("class_page", crn = crn, semester = semester))
+
+def class_delete_redirector(crn, semester):
+    if session.get('logged_in') is None:
+        flash("You are not logged in", "danger")
+        return redirect(url_for("login_page"))
+    if database.delete_class(crn, semester) is True:
+        flash("Class with CRN " + str(crn) + " has been deleted.", "success")
+        return redirect(url_for("classes_page"))
+    else:
         return redirect(url_for("class_page", crn = crn, semester = semester))
 
 def add_follow_redirector(crn, semester, follows):
@@ -186,7 +196,7 @@ def class_edit_page(crn, semester):
 
 def syllabus_page(crn, semester):
     aclass = database.get_whole_class(crn, semester)
-    bytes_io = io.BytesIO(aclass[7])
+    bytes_io = io.BytesIO(aclass[8])
     return send_file(bytes_io, mimetype='application/pdf')
 
 def coursework_addition_page(crn, semester):

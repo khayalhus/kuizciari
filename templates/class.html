@@ -10,23 +10,66 @@
           <h2 class="subtitle is-3">{{ aclass[0] }} ({{ aclass[1] }})</h2>
       </div>
       <div class="block has-text-centered">
-        <a class="button is-normal is-info" href="{{ url_for('coursework_addition_page', crn=aclass[0], semester=aclass[1]) }}">Add Coursework</a>
+        <a class="button is-info" href="{{ url_for('class_edit_page', crn = aclass[0], semester = aclass[1]) }}">Edit Class</a>
         {% if follows == None %}
-          <a class="button is-normal is-info" href="{{ url_for('login_page', crn=aclass[0], semester=aclass[1]) }}">Follow</a>
+          <a class="button is-normal is-info" href="{{ url_for('login_page', crn=aclass[0], semester=aclass[1]) }}">Follow Class</a>
         {% elif follows == False %}
-          <a class="button is-normal is-info is-focused" href="{{ url_for('add_follow_redirector', crn=aclass[0], semester=aclass[1], follows = 'follow') }}">Follow</a>
+          <a class="button is-normal is-info is-focused" href="{{ url_for('add_follow_redirector', crn=aclass[0], semester=aclass[1], follows = 'follow') }}">Follow Class</a>
         {% elif follows == True %}
-          <a class="button is-normal is-info is-active" href="{{ url_for('add_follow_redirector', crn=aclass[0], semester=aclass[1], follows = 'unfollow') }}">Unfollow</a>
+          <a class="button is-normal is-info is-active" href="{{ url_for('add_follow_redirector', crn=aclass[0], semester=aclass[1], follows = 'unfollow') }}">Unfollow Class</a>
         {% endif %}
-        <a class="button is-normal is-info" href="{{ url_for('syllabus_page', crn=aclass[0], semester=aclass[1]) }}" target="_blank">View Syllabus</a>
+        <a class="button is-normal is-danger" href="{{ url_for('class_delete_redirector', crn=aclass[0], semester=aclass[1]) }}">Delete Class</a>
       </div>
-
+      <div class="block has-text-centered">
+        {% if aclass[8] == None %}
+        <a class="button is-normal is-info is-light">No Syllabus Available</a>
+        {% else %}
+          <a class="button is-normal is-info" href="{{ url_for('syllabus_page', crn=aclass[0], semester=aclass[1]) }}" target="_blank">View Syllabus</a>
+        {% endif %}
+      </div>
       {% for category, message in get_flashed_messages(with_categories=True) %}
         <div class="notification is-{{category}}">
           <button class="delete"></button>
           {{ message }}
         </div>
       {% endfor %}
+
+      <div class="table-container">
+        <table class="table is-bordered is-striped is-fullwidth has-text-centered">
+          <thead class="has-background-warning">
+            <tr>
+              <th>Passing Grade %</th>
+              <th>VF Grade %</th>
+              <th>Capacity</th>
+              <th>Enrolled</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr>
+                {% if aclass[4] == None %}
+                <td>-</td>
+                {% else %}
+                <td>{{ aclass[4] }}</td>
+                {% endif %}
+                {% if aclass[5] == None %}
+                <td>-</td>
+                {% else %}
+                <td>{{ aclass[5] }}</td>
+                {% endif %}
+                {% if aclass[6] == None %}
+                <td>-</td>
+                {% else %}
+                <td>{{ aclass[6] }}</td>
+                {% endif %}
+                {% if aclass[7] == None %}
+                <td>-</td>
+                {% else %}
+                <td>{{ aclass[7] }}</td>
+                {% endif %}
+              </tr>
+          </tbody>
+        </table>
+      </div>
       <form method="post" name="class_list">
         <div class="table-container">
           <table class="table is-bordered is-striped is-fullwidth has-text-centered">
@@ -65,8 +108,8 @@
   
         <div class="field is-grouped-centered has-text-centered">
           <div class="control">
-            <a class="button is-info" href="{{ url_for('class_edit_page', crn = aclass[0], semester = aclass[1]) }}">Edit</a>
-            <button class="button is-danger">Delete</button>
+            <a class="button is-normal is-info" href="{{ url_for('coursework_addition_page', crn=aclass[0], semester=aclass[1]) }}">Add Coursework</a>
+            <button class="button is-danger">Delete Selected</button>
           </div>
         </div>
       </form>

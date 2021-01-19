@@ -16,6 +16,8 @@ app.add_url_rule("/course/<string:courseCode>/edit", view_func=views.course_edit
 app.add_url_rule("/class/<int:semester>/<int:crn>", view_func=views.class_page, methods=["GET", "POST"])
 app.add_url_rule("/class/<int:semester>/<int:crn>/edit", view_func=views.class_edit_page, methods=["GET", "POST"])
 app.add_url_rule("/class/<int:semester>/<int:crn>/addwork", view_func=views.coursework_addition_page, methods=["GET", "POST"])
+app.add_url_rule("/class/<int:semester>/<int:crn>/syllabus", view_func=views.syllabus_page)
+app.add_url_rule("/class/<int:semester>/<int:crn>/delete", view_func=views.class_delete_redirector)
 app.add_url_rule("/work/<int:workID>/", view_func=views.coursework_page, methods=["GET", "POST"])
 app.add_url_rule("/work/<int:workID>/edit", view_func=views.coursework_edit_page, methods=["GET", "POST"])
 app.add_url_rule("/class/<int:semester>/<int:crn>/<string:follows>", view_func=views.add_follow_redirector)
@@ -23,7 +25,6 @@ app.add_url_rule("/login", view_func=views.login_page, methods=["GET", "POST"])
 app.add_url_rule("/signup", view_func=views.signup_page, methods=["GET", "POST"])
 app.add_url_rule("/logout", view_func=views.logout_page)
 app.add_url_rule("/profile/works", view_func=views.profile_works_page)
-app.add_url_rule("/class/<int:semester>/<int:crn>/syllabus", view_func=views.syllabus_page)
 app.add_url_rule("/profile/classes", view_func=views.profile_follows_page, methods=["GET", "POST"])
 
 if __name__ == "__main__":
