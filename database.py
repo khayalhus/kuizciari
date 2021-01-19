@@ -277,9 +277,13 @@ def add_instructor(instructorName):
 def add_instructs(crn, semester, instructorID):
     statement = """INSERT INTO "Instructs" ("instructorID", "crn", "semester")
                     VALUES(%(instructorID)s, %(crn)s, %(semester)s);"""
-    cursor.execute(statement, {'instructorID': instructorID, 'crn': crn, 'semester': semester})
-    connection.commit()
-    return
+    try:
+        cursor.execute(statement, {'instructorID': instructorID, 'crn': crn, 'semester': semester})
+        connection.commit()
+        return True
+    except dbapi2.DatabaseError:
+        connection.rollback()
+        return False
 
 def remove_instructs(crn, semester, instructorID):
     statement = """DELETE FROM "Instructs"
@@ -384,9 +388,13 @@ def signup(mail, password):
     salt = os.urandom(32)
     key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
     
-    cursor.execute(statement, {'mail': mail, 'password': key, 'salt': salt})
-    connection.commit()
-    return
+    try:
+        cursor.execute(statement, {'mail': mail, 'password': key, 'salt': salt})
+        connection.commit()
+        return True
+    except dbapi2.DatabaseError:
+        connection.rollback()
+        return False
 
 def checkMail(mail):
     statement = """SELECT "mail" FROM "User" WHERE
