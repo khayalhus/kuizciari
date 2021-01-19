@@ -110,7 +110,7 @@ def class_addition_page():
         return render_template("class_edit.html", year = year_dec, courses = courses, instructors = instructors, zip=zip, values = values)
     elif request.method == "POST":
         form_crn = request.form["crn"]
-        form_semester = request.form["year"] * 100
+        form_semester = request.form["year"]
         form_semester += request.form["season"]
         form_courseCode = request.form["courseCode"]
         form_instructorIDs = request.form.getlist("instructors[]")
