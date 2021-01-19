@@ -174,7 +174,7 @@ def update_course(courseCode, newCourseCode, courseTitle, description, credit, n
     statement = """UPDATE "Course"
                     SET "courseCode" = %(newCourseCode)s,
                     "courseTitle" = %(courseTitle)s,
-                    "courseDescription" = %(courseCode)s,
+                    "courseDescription" = %(courseDescription)s,
                     "credits" = %(credits)s,
                     "necessity" = %(necessity)s,
                     "theoretical" = %(theoretical)s,

@@ -157,7 +157,7 @@ def class_edit_page(crn, semester):
         aclass = database.get_whole_class(crn, semester)
         instructors = database.get_instructors()
         courses = database.get_courses()
-        mapped_values = {'crn': crn, 'semester': semester, 'courseCode': aclass[2], 'instructors': instructorIDs, 'vfGrade': aclass[4], 'passGrade': aclass[3], 'quota': aclass[5], 'enrolled': aclass[6], 'syllabus': ""}
+        mapped_values = {'crn': crn, 'semester': semester, 'courseCode': aclass[2], 'instructors': instructorIDs, 'vfGrade': aclass[5], 'passGrade': aclass[4], 'quota': aclass[6], 'enrolled': aclass[7], 'syllabus': ""}
         for key in mapped_values.keys():
             if mapped_values[key] is None:
                 mapped_values[key] = ""
@@ -189,13 +189,23 @@ def class_edit_page(crn, semester):
         filename = form_syllabus.filename
         file_ext = os.path.splitext(filename)[1]
         aclass = database.get_whole_class(crn, semester)
-        blob_data = aclass[7]
+        blob_data = aclass[8]
         if(filename != ""):
             if file_ext not in current_app.config['UPLOAD_EXTENSIONS']:
                 flash("Syllabus file type can only be pdf", "danger")
                 return redirect(url_for("class_edit_page", crn = crn, semester = semester))
             else:
                 blob_data = form_syllabus.read()
+        print(crn)
+        print(semester)
+        print(form_crn)
+        print(form_semester)
+        print(form_courseCode)
+        print(form_passGrade)
+        print(form_vfGrade)
+        print(form_quota)
+        print(form_enrolled)
+        print(blob_data)
         if database.update_class(crn, semester, form_crn, form_semester, form_courseCode, form_passGrade, form_vfGrade, form_quota, form_enrolled, blob_data) is True:
             for form_instructorID in form_instructorIDs:
                 removed = False
@@ -316,7 +326,7 @@ def course_addition_page():
         values = {"facultyCode": "", "courseNumber": "", "language": "E", "courseTitle": "", "description": "", "credits": "", "compulsory": "", "elective": "", "theoretical": "", "tutorial": "", "laboratory": "", "pool": ""}
         return render_template("course_edit.html", year = year_dec, values = values)
     elif request.method == "POST":
-        form_facultyCode = request.form["facultyCode"]
+        form_facultyCode = request.form["facultyCode"].upper()
         form_courseNumber = request.form["courseNumber"]
         form_language = request.form["language"]
         form_courseTitle = request.form["courseTitle"]
@@ -387,7 +397,7 @@ def course_edit_page(courseCode):
             mapped_values = {"facultyCode": facultyCode, "courseNumber": courseNumber, "language": language, "courseTitle": raw_values[1], "description": raw_values[2], "credits": raw_values[3], "compulsory": compulsory, "elective": elective, "theoretical": raw_values[5], "tutorial": raw_values[6], "laboratory": raw_values[7], "pool": raw_values[4]}
             return render_template("course_edit.html", year = year_dec, values = mapped_values)
     if request.method == "POST":
-        form_facultyCode = request.form["facultyCode"]
+        form_facultyCode = request.form["facultyCode"].upper()
         form_courseNumber = request.form["courseNumber"]
         form_language = request.form["language"]
         form_courseTitle = request.form["courseTitle"]
