@@ -16,9 +16,13 @@ year_dec = today.strftime("%Y")
 def home_page():
     return render_template("home.html", year = year_dec)
 
-def classes_page():
+def semesters_page():
+    semesters = database.get_semesters()
+    return render_template("semesters.html", year = year_dec, semesters = semesters)
+
+def classes_page(semester):
     if request.method == "GET":
-        aclasses = database.get_classes()
+        aclasses = database.get_classes(semester)
         return render_template("classes.html", year = year_dec, aclasses = aclasses[0], instructors = aclasses[1], zip=zip)
     elif request.method == "POST":
         if session.get('logged_in') is None:
@@ -28,7 +32,7 @@ def classes_page():
         for key in keys:
             loaded = json.loads(key)
             database.delete_class(loaded[0], loaded[1])
-        return redirect(url_for("classes_page"))
+        return redirect(url_for("classes_page", semester=semester))
 
 def class_page(crn, semester):
     if request.method == "GET":
@@ -61,7 +65,7 @@ def class_delete_redirector(crn, semester):
         return redirect(url_for("login_page"))
     if database.delete_class(crn, semester) is True:
         flash("Class with CRN " + str(crn) + " has been deleted.", "success")
-        return redirect(url_for("classes_page"))
+        return redirect(url_for("classes_page", semester=semester))
     else:
         return redirect(url_for("class_page", crn = crn, semester = semester))
 
@@ -123,7 +127,7 @@ def class_addition_page():
                 if database.add_instructs(form_crn, form_semester, form_instructorID) is False:
                     flash("Instructor " + str(form_instructorID) + " is already assigned to this class.", "danger")
             flash("Class with CRN " + form_crn +  " has been added.", "success")
-            return redirect(url_for("classes_page"))
+            return redirect(url_for("classes_page", semester=form_semester))
         else:
             flash("Class already exists.", "danger")
             return redirect(url_for("class_addition_page"))
@@ -285,7 +289,7 @@ def courseworktype_addition_page():
             flash("An unknown error occured when adding new coursework type.", "danger")
             return redirect(url_for("courseworktype_addition_page"))
         flash("Coursework type " + form_workTitle + " has been successfully added to the database.", "success")
-        return redirect(url_for("classes_page"))
+        return redirect(url_for("semesters_page"))
 
 def course_addition_page():
     if session.get('logged_in') is None:
@@ -340,13 +344,13 @@ def course_page(courseCode):
             return render_template("course.html", year = year_dec, course=course)
         else:
             flash("Course with code " + str(courseCode) + " could not be found.", "danger")
-            return redirect(url_for("classes_page"))
+            return redirect(url_for("semesters_page"))
     elif request.method == "POST":
         if database.delete_course(courseCode) is False:
             flash("An unknown error occured when removing course.", "danger")
             return redirect(url_for("course_page", courseCode=courseCode))
         flash("Course with code " + str(courseCode) + " and all related classes has been successfully removed from the database.", "success")
-        return redirect(url_for("classes_page"))
+        return redirect(url_for("semesters_page"))
 
 def course_edit_page(courseCode):
     if session.get('logged_in') is None:
@@ -356,7 +360,7 @@ def course_edit_page(courseCode):
         raw_values = database.get_course(courseCode)
         if raw_values is None:
             flash("An unknown error occured when trying to open course for editing.", "danger")
-            return redirect(url_for("classes_page"))
+            return redirect(url_for("semesters_page"))
         else:
             #statement = """SELECT "courseCode", "courseTitle", "courseDescription", "credits", "pool", "theoretical",  "tutorial", "laboratory", "necessity"
             facultyCode = raw_values[0].rstrip("E").rstrip("0123456789")

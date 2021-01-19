@@ -17,10 +17,21 @@ def connect(): # connects to db and returns cursor
 connection = connect()
 cursor = connection.cursor()
 
-def get_classes():
+def get_semesters():
+    statement = """SELECT COUNT("Class"."crn"), "Class"."semester"
+                    FROM "Class"
+                    GROUP BY "Class"."semester"
+                    """
+    cursor.execute(statement)
+    semesters = cursor.fetchall()
+    return semesters
+
+def get_classes(semester):
     statement = """SELECT  "Class"."crn", "Class"."courseCode", "courseTitle", "Class"."semester"
                     FROM "Class"
-                    LEFT JOIN "Course" ON "Class"."courseCode" = "Course"."courseCode";"""
+                    LEFT JOIN "Course" ON "Class"."courseCode" = "Course"."courseCode"
+                    WHERE "Class"."semester" = %(semester)s
+                    ;"""
     statement2 = """SELECT "instructorName" FROM "Instructs"
                     LEFT JOIN "Instructor" ON
                     "Instructor"."instructorID" = "Instructs"."instructorID"
@@ -29,7 +40,7 @@ def get_classes():
                     AND
                     "Instructs"."semester" = %(semester)s;
                     """
-    cursor.execute(statement)
+    cursor.execute(statement, {'semester': semester})
     temp = cursor.fetchall()
     i = 0
     instructors = []

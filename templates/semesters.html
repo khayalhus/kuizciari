@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block title %}Semester List{% endblock %}
+{% block top %}
+<div class="hero-body">
+  <div class="container" style="width: 100%;">
+    <h1 class="title has-text-centered">Classes by semester</h1>
+    
+    {% for category, message in get_flashed_messages(with_categories=True) %}
+      <div class="notification is-{{category}}">
+        <button class="delete"></button>
+        {{ message }}
+      </div>
+    {% endfor %}
+
+    <div class="table-container">
+      <table class="table is-bordered is-striped is-fullwidth has-text-centered">
+        <thead class="has-background-warning">
+          <tr>
+            <th>Semester ID</th>
+            <th>Semester Name</th>
+            <th>Class Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for count, semester in semesters %}
+            <tr>
+              <td><a href="{{ url_for('classes_page', semester=semester) }}">{{ semester }}</a></td>
+              {% if semester % 100 == 10 %}
+              <td>{{ semester//100 - 1 }}-{{ semester//100 }} Fall</td>
+              {% elif semester % 100 == 20 %}
+              <td>{{ semester//100 - 1 }}-{{ semester//100 }} Spring</td>
+              {% elif semester % 100 == 30 %}
+              <td>{{ semester//100 - 1 }}-{{ semester//100 }} Summer</td>
+              {% else %}
+              <td>-</td>
+              {% endif %}
+              <td>{{ count }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
