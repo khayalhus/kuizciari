@@ -7,7 +7,6 @@ CREATE TABLE IF NOT EXISTS "User" (
   "mail" VARCHAR(255) NOT NULL UNIQUE,
   "password" BYTEA NOT NULL,
   "salt" BYTEA NOT NULL,
-  "userType" VARCHAR(255) NOT NULL,
   PRIMARY KEY ("userID")
 );""",
 """

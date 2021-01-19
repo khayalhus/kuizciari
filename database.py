@@ -357,14 +357,14 @@ def remove_follow(userID, crn, semester):
         connection.rollback()
         return False
                     
-def signup(mail, password, userType):
-    statement = """INSERT INTO "User" ("mail", "password", "salt", "userType")
-                    VALUES(%(mail)s, %(password)s, %(salt)s, %(userType)s);"""
+def signup(mail, password):
+    statement = """INSERT INTO "User" ("mail", "password", "salt")
+                    VALUES(%(mail)s, %(password)s, %(salt)s);"""
                     
     salt = os.urandom(32)
     key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
     
-    cursor.execute(statement, {'mail': mail, 'password': key, 'salt': salt, 'userType': userType})
+    cursor.execute(statement, {'mail': mail, 'password': key, 'salt': salt})
     connection.commit()
     return
 
@@ -389,7 +389,7 @@ def checkPass(mail, password_attempt):
     key = credentials[0]
     key_attempt = hashlib.pbkdf2_hmac('sha256', password_attempt.encode('utf-8'), salt, 100000)
     
-    statement2 = """SELECT "userID", "userType" FROM "User" WHERE
+    statement2 = """SELECT "userID" FROM "User" WHERE
                     "User"."mail" = %(mail)s
                     AND
                     "User"."password" = %(password)s;"""

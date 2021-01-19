@@ -21,6 +21,9 @@ def classes_page():
         aclasses = database.get_classes()
         return render_template("classes.html", year = year_dec, aclasses = aclasses[0], instructors = aclasses[1], zip=zip)
     elif request.method == "POST":
+        if session.get('logged_in') is None:
+            flash("You are not logged in", "danger")
+            return redirect(url_for("login_page"))
         keys = request.form.getlist("class_keys")
         for key in keys:
             loaded = json.loads(key)
@@ -41,6 +44,9 @@ def class_page(crn, semester):
             mapped_courseworks.append({'id': raw_coursework[0], 'title': raw_coursework[1], 'startdate': raw_coursework[2], 'starttime': raw_coursework[3], 'enddate': raw_coursework[4], 'endtime': raw_coursework[5], 'grading': raw_coursework[6], 'description': raw_coursework[7]})
         return render_template("class.html", year = year_dec, aclass = aclass, courseworks = mapped_courseworks, follows = follows, zip=zip)
     elif request.method == "POST":
+        if session.get('logged_in') is None:
+            flash("You are not logged in", "danger")
+            return redirect(url_for("login_page"))
         ids = request.form.getlist("class_keys")
         for workID in ids:
             if database.delete_coursework(workID) is False:
@@ -67,6 +73,9 @@ def add_follow_redirector(crn, semester, follows):
     return redirect(url_for("class_page", crn = crn, semester = semester))
 
 def class_addition_page():
+    if session.get('logged_in') is None:
+        flash("You are not logged in", "danger")
+        return redirect(url_for("login_page"))
     if request.method == "GET":
         values = {'crn': "", 'semester': "", 'courseCode': "", 'instructors': [], 'vfGrade': "", 'passGrade': "", 'quota': "", 'enrolled': "", 'syllabus': ""}
         instructors = database.get_instructors()
@@ -110,6 +119,9 @@ def class_addition_page():
             return redirect(url_for("class_addition_page"))
 
 def class_edit_page(crn, semester):
+    if session.get('logged_in') is None:
+        flash("You are not logged in", "danger")
+        return redirect(url_for("login_page"))
     if request.method == "GET":
         instructorIDs = []
         for instructor_info in database.get_class_instructors(crn, semester):
@@ -178,6 +190,9 @@ def syllabus_page(crn, semester):
     return send_file(bytes_io, mimetype='application/pdf')
 
 def coursework_addition_page(crn, semester):
+    if session.get('logged_in') is None:
+        flash("You are not logged in", "danger")
+        return redirect(url_for("login_page"))
     if request.method == "GET":
         #def add_coursework(crn, semester, startdate, starttime, enddate, endtime, grading, description, workType):
         values = {'crn': "", 'semester': "", 'startdate': "", 'starttime': "", 'enddate': "", 'endtime': "", 'grading': "", 'description': "", 'workType': ""}
@@ -207,6 +222,9 @@ def coursework_page(workID):
         aclass = database.get_class(mapped_values['crn'], mapped_values['semester'])
         return render_template("coursework.html", year = year_dec, aclass = aclass, values=mapped_values)
     elif request.method == "POST":
+        if session.get('logged_in') is None:
+            flash("You are not logged in", "danger")
+            return redirect(url_for("login_page"))
         coursework = database.get_coursework(workID)
         mapped_values = {'crn': coursework[9], 'semester': coursework[10], 'startdate': coursework[2], 'starttime': coursework[3], 'enddate': coursework[4], 'endtime': coursework[5], 'grading': coursework[6], 'description': coursework[7], 'workType': coursework[8]}
         if database.delete_coursework(workID) is True:
@@ -218,6 +236,9 @@ def coursework_page(workID):
 
 
 def coursework_edit_page(workID):
+    if session.get('logged_in') is None:
+        flash("You are not logged in", "danger")
+        return redirect(url_for("login_page"))
     if request.method == "GET":
         coursework = database.get_coursework(workID)
         mapped_values = {'crn': coursework[9], 'semester': coursework[10], 'startdate': coursework[2], 'starttime': coursework[3], 'enddate': coursework[4], 'endtime': coursework[5], 'grading': coursework[6], 'description': coursework[7], 'workType': coursework[8]}
@@ -242,6 +263,9 @@ def coursework_edit_page(workID):
 
 
 def courseworktype_addition_page():
+    if session.get('logged_in') is None:
+        flash("You are not logged in", "danger")
+        return redirect(url_for("login_page"))
     if request.method == "GET":
         return render_template("courseworktype_edit.html", year = year_dec)
     elif request.method == "POST":
@@ -254,6 +278,9 @@ def courseworktype_addition_page():
         return redirect(url_for("classes_page"))
 
 def course_addition_page():
+    if session.get('logged_in') is None:
+        flash("You are not logged in", "danger")
+        return redirect(url_for("login_page"))
     if request.method == "GET":
         values = {"facultyCode": "", "courseNumber": "", "language": "E", "courseTitle": "", "description": "", "credits": "", "compulsory": "", "elective": "", "theoretical": "", "tutorial": "", "laboratory": "", "pool": ""}
         return render_template("course_edit.html", year = year_dec, values = values)
@@ -283,6 +310,9 @@ def course_addition_page():
         return redirect(url_for("class_addition_page"))
 
 def instructor_addition_page():
+    if session.get('logged_in') is None:
+        flash("You are not logged in", "danger")
+        return redirect(url_for("login_page"))
     if request.method == "GET":
         return render_template("instructor_edit.html", year = year_dec)
     elif request.method == "POST":
@@ -309,6 +339,9 @@ def course_page(courseCode):
         return redirect(url_for("classes_page"))
 
 def course_edit_page(courseCode):
+    if session.get('logged_in') is None:
+        flash("You are not logged in", "danger")
+        return redirect(url_for("login_page"))
     if request.method == "GET":
         raw_values = database.get_course(courseCode)
         if raw_values is None:
@@ -364,8 +397,7 @@ def login_page():
                 return redirect(url_for("login_page"))
             else:
                 session['logged_in'] = True
-                session['userID'] = matches[0]
-                session['userType'] = matches[1]
+                session['userID'] = matches
                 session['mail'] = email
                 return redirect(url_for("profile_works_page"))
         else:
@@ -378,13 +410,16 @@ def signup_page():
     elif request.method == "POST":
         email = request.form["email"]
         password = request.form["password"]
-        userType = request.form["userType"]
+        domain = email.split("@")[1]
+        if domain != "itu.edu.tr":
+            flash("Only ITU accounts are allowed", "danger")
+            return redirect(url_for("signup_page"))
         isDuplicate = database.checkMail(email)
         if isDuplicate is True:
             flash("Account already exists.", "danger")
             return redirect(url_for("signup_page"))
         else:
-            database.signup(email, password, userType)
+            database.signup(email, password)
             flash("Account created. Please log in.", "success")
             return redirect(url_for("login_page"))
 
@@ -418,6 +453,5 @@ def profile_follows_page():
 def logout_page():
     session.pop('logged_in', None)
     session.pop('userID', None)
-    session.pop('userType', None)
     session.pop('mail', None)
     return redirect(url_for("login_page"))
