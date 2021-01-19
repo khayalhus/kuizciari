@@ -192,7 +192,9 @@ def update_course(courseCode, newCourseCode, courseTitle, description, credit, n
         return False
 
 def get_courses():
-    statement = """SELECT "courseCode", "courseTitle" FROM "Course"
+    statement = """SELECT "Course"."courseCode", "Course"."courseTitle", COUNT("Class"."crn"), COUNT(DISTINCT "Class"."semester") FROM "Course"
+                    LEFT JOIN "Class" ON "Class"."courseCode" = "Course"."courseCode"
+                    GROUP BY "Course"."courseCode"
                     ORDER BY "courseCode" ASC
                 ;"""
     cursor.execute(statement)

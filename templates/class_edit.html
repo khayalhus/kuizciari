@@ -55,7 +55,7 @@
         <div class="control">
           <select class="form-control" id="course" name="courseCode" style="width: 100%" required>
             <option value="">&nbsp;</option>
-            {% for courseCode, courseTitle in courses %}
+            {% for courseCode, courseTitle, crnCount, semesterCount in courses %}
             <option value="{{ courseCode }}">{{ courseCode }}</option>
             {% endfor %}
           </select>

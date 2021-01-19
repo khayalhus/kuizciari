@@ -20,10 +20,12 @@
               <th>Pick</th>
               <th>Course Code</th>
               <th>Course Title</th>
+              <th>Classes</th>
+              <th>Semesters</th>
             </tr>
           </thead>
           <tbody>
-            {% for courseCode, courseTitle in courses %}
+            {% for courseCode, courseTitle, crnCount, semesterCount in courses %}
               <tr>
                 <td>
                   <label class="checkbox">
@@ -32,6 +34,8 @@
                 </td>
                 <td><a href="{{ url_for('course_page', courseCode=courseCode) }}">{{ courseCode }}</a></td>
                 <td>{{ courseTitle }}</td>
+                <td>{{ crnCount }}</td>
+                <td>{{ semesterCount }}</td>
               </tr>
             {% endfor %}
           </tbody>
