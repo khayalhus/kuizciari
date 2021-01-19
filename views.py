@@ -20,6 +20,19 @@ def semesters_page():
     semesters = database.get_semesters()
     return render_template("semesters.html", year = year_dec, semesters = semesters)
 
+def courses_page():
+    if request.method == "GET":
+        courses = database.get_courses()
+        return render_template("courses.html", year = year_dec, courses = courses)
+    elif request.method == "POST":
+        if session.get('logged_in') is None:
+            flash("You are not logged in", "danger")
+            return redirect(url_for("login_page"))
+        keys = request.form.getlist("course_keys")
+        for key in keys:
+            database.delete_course(key)
+        return redirect(url_for("courses_page"))
+
 def classes_page(semester):
     if request.method == "GET":
         aclasses = database.get_classes(semester)
@@ -344,13 +357,13 @@ def course_page(courseCode):
             return render_template("course.html", year = year_dec, course=course)
         else:
             flash("Course with code " + str(courseCode) + " could not be found.", "danger")
-            return redirect(url_for("semesters_page"))
+            return redirect(url_for("courses_page"))
     elif request.method == "POST":
         if database.delete_course(courseCode) is False:
             flash("An unknown error occured when removing course.", "danger")
             return redirect(url_for("course_page", courseCode=courseCode))
         flash("Course with code " + str(courseCode) + " and all related classes has been successfully removed from the database.", "success")
-        return redirect(url_for("semesters_page"))
+        return redirect(url_for("courses_page"))
 
 def course_edit_page(courseCode):
     if session.get('logged_in') is None:
@@ -360,9 +373,8 @@ def course_edit_page(courseCode):
         raw_values = database.get_course(courseCode)
         if raw_values is None:
             flash("An unknown error occured when trying to open course for editing.", "danger")
-            return redirect(url_for("semesters_page"))
+            return redirect(url_for("courses_page"))
         else:
-            #statement = """SELECT "courseCode", "courseTitle", "courseDescription", "credits", "pool", "theoretical",  "tutorial", "laboratory", "necessity"
             facultyCode = raw_values[0].rstrip("E").rstrip("0123456789")
             courseNumber = raw_values[0].lstrip(ascii_letters).rstrip("E")
             language = raw_values[0].lstrip(ascii_letters).lstrip("0123456789")

@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block title %}Course List{% endblock %}
+{% block top %}
+<div class="hero-body">
+  <div class="container" style="width: 100%;">
+    <h1 class="title has-text-centered">Courses</h1>
+    
+    {% for category, message in get_flashed_messages(with_categories=True) %}
+      <div class="notification is-{{category}}">
+        <button class="delete"></button>
+        {{ message }}
+      </div>
+    {% endfor %}
+
+    <form method="post" name="course_list">
+      <div class="table-container">
+        <table class="table is-bordered is-striped is-fullwidth has-text-centered">
+          <thead class="has-background-warning">
+            <tr>
+              <th>Pick</th>
+              <th>Course Code</th>
+              <th>Course Title</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for courseCode, courseTitle in courses %}
+              <tr>
+                <td>
+                  <label class="checkbox">
+                    <input type="checkbox" name="course_keys" value="{{ courseCode  }}"/>
+                  </label>
+                </td>
+                <td><a href="{{ url_for('course_page', courseCode=courseCode) }}">{{ courseCode }}</a></td>
+                <td>{{ courseTitle }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="field is-grouped-centered has-text-centered">
+        <div class="control">
+          <button class="button is-danger">Delete</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

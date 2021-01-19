@@ -192,7 +192,9 @@ def update_course(courseCode, newCourseCode, courseTitle, description, credit, n
         return False
 
 def get_courses():
-    statement = """SELECT "courseCode", "courseTitle" FROM "Course";"""
+    statement = """SELECT "courseCode", "courseTitle" FROM "Course"
+                    ORDER BY "courseCode" ASC
+                ;"""
     cursor.execute(statement)
     courses = cursor.fetchall()
     return courses
