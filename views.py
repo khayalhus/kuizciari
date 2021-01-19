@@ -92,10 +92,13 @@ def class_addition_page():
             form_enrolled = None
         filename = form_syllabus.filename
         file_ext = os.path.splitext(filename)[1]
-        if file_ext not in current_app.config['UPLOAD_EXTENSIONS']:
-            flash("Syllabus file type can only be pdf", "danger")
-            return redirect(url_for("class_addition_page"))
-        blob_data = form_syllabus.read()
+        blob_data = None
+        if(filename != ""):
+            if file_ext not in current_app.config['UPLOAD_EXTENSIONS']:
+                flash("Syllabus file type can only be pdf", "danger")
+                return redirect(url_for("class_addition_page"))
+            else:
+                blob_data = form_syllabus.read()
         if database.add_class(form_crn, form_semester, form_courseCode, form_passGrade, form_vfGrade, form_quota, form_enrolled, blob_data) is True:
             for form_instructorID in form_instructorIDs:
                 if database.add_instructs(form_crn, form_semester, form_instructorID) is False:
@@ -137,7 +140,6 @@ def class_edit_page(crn, semester):
             form_quota = None
         if form_enrolled == "":
             form_enrolled = None
-
         instructorIDs = []
         for instructor_info in database.get_class_instructors(crn, semester):
             instructorIDs.append(instructor_info[0])
@@ -365,7 +367,7 @@ def login_page():
                 session['userID'] = matches[0]
                 session['userType'] = matches[1]
                 session['mail'] = email
-                return redirect(url_for("profile_page"))
+                return redirect(url_for("profile_works_page"))
         else:
             flash("A user with this e-mail address does not exist.", "danger")
             return redirect(url_for("login_page"))
@@ -386,9 +388,30 @@ def signup_page():
             flash("Account created. Please log in.", "success")
             return redirect(url_for("login_page"))
 
-def profile_page():
+def profile_works_page():
     if session.get('logged_in') is not None:
-        return render_template("profile.html", year = year_dec)
+        courseworks = database.get_following_courseworks(session.get('userID'))
+        mapped_values = []
+        for coursework in courseworks:
+            mapped_values.append({'workID': coursework[0], 'date': coursework[1], 'time': coursework[2], 'grading': coursework[3], 'crn': coursework[4], 'semester': coursework[5], 'courseCode': coursework[6], 'courseTitle': coursework[7], 'workTitle': coursework[8]})
+        return render_template("profile_works.html", year = year_dec, courseworks = mapped_values, zip=zip)
+    else:
+        return redirect(url_for("login_page"))
+
+def profile_follows_page():
+    if session.get('logged_in') is not None:
+        if request.method == "GET":
+            aclasses = database.get_following_classes(session.get('userID'))
+            mapped_values = []
+            for aclass in aclasses[0]:
+                mapped_values.append({'crn': aclass[0], 'courseCode': aclass[1], 'courseTitle': aclass[2], 'semester': aclass[3], 'passGrade': aclass[4], 'vfGrade': aclass[5], 'quota': aclass[6], 'enrolled': aclass[7], 'syllabus': aclass[8], 'count': aclass[9], 'sum': aclass[10]})
+            return render_template("profile_follows.html", year = year_dec, aclasses = mapped_values, instructors = aclasses[1], zip=zip)
+        if request.method == "POST":
+            keys = request.form.getlist("class_keys")
+            for key in keys:
+                loaded = json.loads(key)
+                database.remove_follow(session.get('userID'), loaded[0], loaded[1])
+            return redirect(url_for("profile_follows_page"))
     else:
         return redirect(url_for("login_page"))
 

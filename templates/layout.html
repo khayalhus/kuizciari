@@ -45,7 +45,8 @@
             <div class="navbar-item has-dropdown is-hoverable">
               <a class="navbar-link">{{ session['mail'] }}</a>
               <div class="navbar-dropdown">
-                <a href="{{ url_for('profile_page') }}" class="navbar-item">Profile</a>
+                <a href="{{ url_for('profile_works_page') }}" class="navbar-item">Courseworks</a>
+                <a href="{{ url_for('profile_follows_page') }}" class="navbar-item">Classes</a>
                 <a href="{{ url_for('logout_page') }}" class="navbar-item">Log out</a>
               </div>
             </div>

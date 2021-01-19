@@ -397,3 +397,59 @@ def checkPass(mail, password_attempt):
     cursor.execute(statement2, {'mail': mail, 'password': key_attempt})
     userType = cursor.fetchone()
     return userType
+
+def get_following_classes(userID):
+    statement1 = """SELECT "Class"."crn", "Class"."courseCode", "Course"."courseTitle", "Class"."semester", "passGrade", "vfGrade", "quota", "enrolled", "syllabus", COUNT("Coursework"."workID"), SUM("Coursework"."grading")
+                    FROM "Follows"
+                    LEFT JOIN "Class" ON "Class"."crn" = "Follows"."crn" AND "Class"."semester" = "Follows"."semester"
+                    LEFT JOIN "Course" ON "Class"."courseCode" = "Course"."courseCode"
+                    LEFT JOIN "Coursework" ON "Coursework"."crn" = "Class"."crn" AND "Coursework"."semester" = "Class"."semester"
+                    WHERE
+                    "Follows"."userID" = %(userID)s
+                    GROUP BY
+                    "Class"."crn", "Class"."semester", "Course"."courseTitle"
+                ;"""
+    statement2 = """SELECT "instructorName" FROM "Instructs"
+                    LEFT JOIN "Instructor" ON
+                    "Instructor"."instructorID" = "Instructs"."instructorID"
+                    WHERE
+                    "Instructs"."crn" = %(crn)s
+                    AND
+                    "Instructs"."semester" = %(semester)s;
+                    """
+    cursor.execute(statement1, {'userID': userID})
+    temp = cursor.fetchall()
+    i = 0
+    instructors = []
+    for crn, courseCode, courseTitle, semester, passGrade, vfGrade, quota, enrolled, syllabus, count, sums in temp:
+        instructors.append([])
+        cursor.execute(statement2, {'crn': crn, 'semester': semester})
+        instructors_query = cursor.fetchall()
+        for instructor_info in instructors_query:
+            instructors[i].append(instructor_info[0])
+        i = i + 1
+    classes = [temp, instructors]
+    return classes
+
+def get_following_courseworks(userID):
+    statement="""
+        (SELECT "workID", "startdate" AS date, "starttime" AS time, "grading", "Coursework"."crn", "Coursework"."semester", "Class"."courseCode", "Course"."courseTitle", "CourseworkType"."workTitle"
+        FROM "Coursework"
+        LEFT JOIN "CourseworkType" ON "CourseworkType"."workType" = "Coursework"."workType"
+        LEFT JOIN "Class" ON "Class"."crn" = "Coursework"."crn" AND "Class"."semester" = "Coursework"."semester"
+        LEFT JOIN "Course" ON "Class"."courseCode" = "Course"."courseCode"
+        RIGHT JOIN "Follows" ON "Follows"."crn" = "Coursework"."crn" AND "Follows"."semester" = "Coursework"."semester" AND "Follows"."userID" = %(userID)s
+        WHERE "CourseworkType"."deadlineType" = 'start'
+        UNION
+        SELECT "workID", "enddate" AS date, "endtime" AS time, "grading", "Coursework"."crn", "Coursework"."semester", "Class"."courseCode", "Course"."courseTitle", "CourseworkType"."workTitle"
+        FROM "Coursework"
+        LEFT JOIN "CourseworkType" ON "CourseworkType"."workType" = "Coursework"."workType"
+        LEFT JOIN "Class" ON "Class"."crn" = "Coursework"."crn" AND "Class"."semester" = "Coursework"."semester"
+        LEFT JOIN "Course" ON "Class"."courseCode" = "Course"."courseCode"
+        RIGHT JOIN "Follows" ON "Follows"."crn" = "Coursework"."crn" AND "Follows"."semester" = "Coursework"."semester" AND "Follows"."userID" = %(userID)s
+        WHERE "CourseworkType"."deadlineType" = 'end')
+        ORDER BY "date" ASC, "time" ASC
+    ;"""
+    cursor.execute(statement, {'userID': userID})
+    courseworks = cursor.fetchall()
+    return courseworks
