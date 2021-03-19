@@ -12,6 +12,15 @@
     <div class="columns is-centered">
       <div class="column is-6-tablet is-5-desktop is-4-widescreen">
         
+        <div class="notification is-info" style="margin: 0 auto;">
+          <button class="delete"></button>
+          This is a demo website. There is no e-mail validation. You can sign up with a random @itu.edu.tr address for testing purposes.
+        </div>
+        <div class="notification is-info" style="margin: 0 auto;">
+          <button class="delete"></button>
+          This is a demo website. The passwords are salted and hashed. You should still use a unique password, which is not in use on other sites.
+        </div>
+
         {% for category, message in get_flashed_messages(with_categories=True) %}
         <div class="notification is-{{category}}" style="margin: 0 auto;">
           <button class="delete"></button>
